@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FITNESS OS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Barlow:wght@400;500;600&display=swap');
+
+:root {
+  --bg: #080a0c;
+  --surface: #0d1014;
+  --surface2: #111518;
+  --border: #1e2428;
+  --border2: #252c32;
+  --text: #d4dde4;
+  --muted: #4a5560;
+  --muted2: #2e3840;
+  --lime: #b8ff3c;
+  --orange: #ff6020;
+  --cyan: #20c8e8;
+  --yellow: #ffc840;
+  --red: #ff3c50;
+  --blue: #3c88ff;
+  --white: #eef2f5;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  min-height: 100vh;
+  padding: 0 0 60px;
+  font-size: 14px;
+}
+
+/* TOP BAR */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 12px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(8,10,12,0.97);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+.logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 5px;
+  color: var(--lime);
+  text-transform: uppercase;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.clock-main {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.clock-date {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+/* HERO */
+.hero {
+  padding: 20px 20px 0;
+  animation: fadeUp 0.35s ease both;
+}
+
+.day-type-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.day-chip {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 3px 10px 2px;
+}
+.chip-train  { background: var(--orange); color: #fff; }
+.chip-rest   { background: var(--blue);   color: #fff; }
+.chip-cardio { background: var(--yellow); color: #000; }
+.chip-ovr    { background: var(--cyan);   color: #000; font-size: 9px; }
+
+.day-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  line-height: 1;
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+.diet-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.diet-high { color: var(--orange); }
+.diet-mid  { color: var(--yellow); }
+.diet-low  { color: var(--blue); }
+
+/* NOW CARD */
+.now-card {
+  margin: 16px 20px 0;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--lime);
+  padding: 14px 16px;
+  animation: fadeUp 0.35s 0.05s ease both;
+}
+
+.now-eyebrow {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--lime);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.now-task {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.now-detail {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+.now-next {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.now-next-time {
+  color: var(--cyan);
+  font-weight: 700;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+}
+
+/* OVERRIDE */
+.override-section {
+  margin: 14px 20px 0;
+  animation: fadeUp 0.35s 0.08s ease both;
+}
+
+.sec-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sec-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.override-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ovr-btn {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 12px 5px;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.ovr-btn:hover { color: var(--text); background: #161c22; border-color: #333; }
+.ovr-btn.active-ovr { background: var(--cyan); color: #000; border-color: var(--cyan); }
+.ovr-btn.reset-btn { color: var(--muted2); border-color: var(--border); }
+.ovr-btn.reset-btn:hover { color: var(--orange); border-color: var(--orange); background: rgba(255,96,32,0.06); }
+
+.override-hint {
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--cyan);
+  letter-spacing: 1px;
+  display: none;
+  font-weight: 600;
+}
+.override-hint.visible { display: block; }
+
+/* SECTIONS */
+.section {
+  margin: 16px 20px 0;
+  animation: fadeUp 0.35s ease both;
+}
+
+/* TIMELINE */
+.timeline { display: flex; flex-direction: column; }
+
+.tl-item {
+  display: grid;
+  grid-template-columns: 44px 16px 1fr;
+  gap: 0;
+  padding-bottom: 14px;
+}
+.tl-item:last-child { padding-bottom: 0; }
+
+.tl-time {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: right;
+  padding-top: 3px;
+  padding-right: 10px;
+  letter-spacing: 0.3px;
+}
+
+.tl-spine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tl-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border2);
+  flex-shrink: 0;
+  margin-top: 5px;
+  transition: all 0.2s;
+}
+
+.tl-vline {
+  width: 1px;
+  flex: 1;
+  background: var(--border);
+  min-height: 18px;
+  margin-top: 3px;
+}
+.tl-item:last-child .tl-vline { display: none; }
+
+.tl-body { padding-left: 10px; }
+
+.tl-task {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  line-height: 1.2;
+}
+
+.tl-detail {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+  line-height: 1.5;
+}
+
+.tl-item.active .tl-time { color: var(--lime); }
+.tl-item.active .tl-dot { background: var(--lime); box-shadow: 0 0 8px rgba(184,255,60,0.6); width: 9px; height: 9px; margin-top: 4px; }
+.tl-item.active .tl-task { color: var(--lime); }
+.tl-item.active .tl-detail { color: #7a9a50; }
+
+.tl-item.past .tl-time,
+.tl-item.past .tl-task,
+.tl-item.past .tl-detail { color: var(--muted2); }
+.tl-item.past .tl-dot { background: var(--muted2); }
+
+/* MACROS */
+.macro-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.macro-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 12px 14px 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.macro-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 2px;
+}
+.macro-cal::after  { background: var(--orange); }
+.macro-pro::after  { background: var(--lime); }
+.macro-carb::after { background: var(--cyan); }
+.macro-fat::after  { background: var(--yellow); }
+
+.macro-lbl {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.macro-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.macro-cal  .macro-val { color: var(--orange); }
+.macro-pro  .macro-val { color: var(--lime); }
+.macro-carb .macro-val { color: var(--cyan); }
+.macro-fat  .macro-val { color: var(--yellow); }
+
+.macro-unit {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-left: 2px;
+  letter-spacing: 0;
+}
+
+/* SUPPL */
+.suppl-list { display: flex; flex-direction: column; gap: 6px; }
+
+.suppl-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+}
+
+.suppl-icon { font-size: 15px; flex-shrink: 0; }
+.suppl-text { font-size: 13px; color: var(--text); font-weight: 500; }
+.suppl-when {
+  margin-left: auto;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* SPINE */
+.spine-extra {
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  background: rgba(32,200,232,0.05);
+  border: 1px solid rgba(32,200,232,0.18);
+  font-size: 12px;
+  color: var(--cyan);
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.spine-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.spine-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--cyan);
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.spine-sub {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.tl-task-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tl-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  padding: 1px 7px;
+  white-space: nowrap;
+}
+
+.tl-item.active .tl-tag {
+  color: var(--lime);
+  border-color: rgba(184,255,60,0.3);
+  background: rgba(184,255,60,0.06);
+}
+
+.tl-item.past .tl-tag {
+  color: var(--muted2);
+  border-color: var(--border);
+  background: transparent;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">Fitness OS</div>
+  <div class="topbar-right">
+    <div class="clock-main" id="clock">--:--</div>
+    <div class="clock-date" id="dateStr">--</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="day-type-row">
+    <div class="day-chip" id="dayChip">--</div>
+    <div class="day-chip chip-ovr" id="overrideChip" style="display:none">⚡ 已覆盖</div>
+  </div>
+  <div class="day-title" id="dayTitle">--</div>
+  <div class="diet-badge" id="dietBadge">--</div>
+</div>
+
+<div class="now-card">
+  <div class="now-eyebrow">▶ 现在该做什么</div>
+  <div class="now-task" id="nowTask">--</div>
+  <div class="now-detail" id="nowDetail">--</div>
+  <div class="now-next" id="nowNext" style="display:none">
+    <span>下一步</span>
+    <span class="now-next-time" id="nowNextTime">--</span>
+    <span id="nowNextTask">--</span>
+  </div>
+</div>
+
+<div class="override-section">
+  <div class="sec-label">今日改为</div>
+  <div class="override-btns">
+    <button class="ovr-btn" onclick="setOverride(this,'chest')">胸+肩+三头</button>
+    <button class="ovr-btn" onclick="setOverride(this,'back')">背+二头</button>
+    <button class="ovr-btn" onclick="setOverride(this,'legs')">腿+臀</button>
+    <button class="ovr-btn" onclick="setOverride(this,'cardio')">爬坡走</button>
+    <button class="ovr-btn" onclick="setOverride(this,'rest')">休息日</button>
+    <button class="ovr-btn reset-btn" onclick="resetOverride()">↺ 恢复默认</button>
+  </div>
+  <div class="override-hint" id="overrideHint">⚡ 已手动覆盖 · 刷新后自动恢复默认</div>
+</div>
+
+<div class="section" style="animation-delay:0.06s">
+  <div class="sec-label">今日时间线</div>
+  <div class="timeline" id="timeline"></div>
+</div>
+
+<div class="section" style="animation-delay:0.10s">
+  <div class="sec-label">饮食目标</div>
+  <div class="macro-grid" id="macroGrid"></div>
+</div>
+
+<div class="section" style="animation-delay:0.14s">
+  <div class="sec-label">补剂</div>
+  <div class="suppl-list" id="supplList"></div>
+</div>
+
+<div class="section" style="animation-delay:0.18s">
+  <div class="sec-label" id="spineLabel">胸椎松动 · 每2小时</div>
+  <div id="spineExtra"></div>
+  <div class="spine-grid">
+    <div class="spine-item">椅背顶胸椎后仰<span class="spine-sub">30秒 × 3</span></div>
+    <div class="spine-item">猫牛式<span class="spine-sub">10次 慢速</span></div>
+    <div class="spine-item">坐姿胸椎旋转<span class="spine-sub">每侧10次</span></div>
+    <div class="spine-item">俯卧抬胸<span class="spine-sub">10次</span></div>
+  </div>
+</div>
+
+<script>
+const DAYS = ['日','一','二','三','四','五','六'];
+let todayOverride = null;
+
+const OVERRIDE_MAP = { chest:1, back:2, legs:4, cardio:6, rest:'R' };
+
+const mkTrainTL = (muscle, note) => [
+  { time:'10:30', task:'练前餐', tag:'🔋 练前能量', detail:'饭团1个(碳水45g) + 水煮蛋1个(蛋白6g)　→ 快消化碳水供能，不要高脂肪' },
+  { time:'11:10', task:'出发健身房', tag:'', detail:'步行10分钟' },
+  { time:'11:20', task:'开始训练', tag:'', detail:`${muscle}${note?' · '+note:''} · 泡沫轴热身2min` },
+  { time:'12:10', task:'练后即刻', tag:'💪 合成窗口', detail:'蛋白粉1勺(蛋白25g) + 肌酸5g 冲水喝　→ 训练后胰岛素敏感性最高，此刻摄入最高效' },
+  { time:'12:30', task:'午餐', tag:'💪 高碳高蛋白', detail:'肉200g(蛋白40g) + 米饭1.5碗(碳水90g) + 蔬菜　→ 碳水集中在练后，补充糖原+促合成' },
+  { time:'18:30', task:'晚餐', tag:'🔵 开始降碳水', detail:'肉150g(蛋白30g) + 米饭半碗(碳水40g) + 蔬菜　→ 碳水减半，蛋白维持' },
+  { time:'22:00', task:'睡前', tag:'🌙 修复补充', detail:'希腊酸奶150g(蛋白15g) 或 蛋白粉1勺(蛋白25g)　→ 当日蛋白不足160g时必吃' },
+];
+
+const LOW_TL = [
+  { time:'09:30', task:'早餐', tag:'🔵 低碳启动', detail:'鸡蛋3个(蛋白18g) + 牛油果半个或坚果一把　→ 几乎零碳水，靠脂肪供能' },
+  { time:'12:30', task:'午餐 + 肌酸5g', tag:'🔵 少碳维持', detail:'肉200g(蛋白40g) + 蔬菜大量 + 米饭半碗(碳水35g)　→ 今日碳水上限80g，这顿用掉一半' },
+  { time:'18:30', task:'晚餐', tag:'🔵 无碳水', detail:'肉150g(蛋白30g) + 豆腐100g(蛋白5g) + 蔬菜　→ 不吃米饭，逼迫身体动员脂肪供能' },
+  { time:'22:00', task:'睡前', tag:'🌙 修复补充', detail:'希腊酸奶150g(蛋白15g) 或 蛋白粉1勺(蛋白25g)　→ 蛋白质每天固定180g，休息日也不能少' },
+];
+
+const PLAN = {
+  R: { type:'rest', label:'休息日', chipClass:'chip-rest', diet:'low' },
+  0: { type:'rest', label:'休息日', chipClass:'chip-rest', diet:'low' },
+  1: { type:'train', label:'胸 · 肩 · 三头', chipClass:'chip-train', diet:'high', tl: mkTrainTL('胸/肩/三头') },
+  2: { type:'train', label:'背 · 二头', chipClass:'chip-train', diet:'high', tl: mkTrainTL('背/二头','Face Pull必做') },
+  3: { type:'rest', label:'休息日', chipClass:'chip-rest', diet:'low', spineExtra:'今日胸椎专项：泡沫轴+猫牛+椅背伸展，完整做15分钟' },
+  4: { type:'train', label:'腿 · 臀', chipClass:'chip-train', diet:'high', tl: mkTrainTL('腿/臀') },
+  5: { type:'rest', label:'休息日', chipClass:'chip-rest', diet:'low' },
+  6: { type:'cardio', label:'有氧 · 爬坡走', chipClass:'chip-cardio', diet:'mid', tl:[
+    { time:'10:00', task:'练前餐', tag:'🔋 练前能量', detail:'香蕉1根(碳水25g) + 水煮蛋2个(蛋白12g)　→ 有氧前轻量碳水，不要撑' },
+    { time:'10:40', task:'出发健身房', tag:'', detail:'步行10分钟' },
+    { time:'10:50', task:'爬坡走', tag:'', detail:'坡度8–12% · 时速5–6km/h · 40分钟 · 心率120–140' },
+    { time:'11:30', task:'练后即刻', tag:'💪 合成窗口', detail:'蛋白粉1勺(蛋白25g) + 肌酸5g 冲水喝' },
+    { time:'12:00', task:'早午餐', tag:'🟡 中碳补充', detail:'肉150g(蛋白30g) + 鸡蛋2个(蛋白12g) + 米饭1碗(碳水60g)　→ 有氧后适量碳水，不如训练日多' },
+    { time:'13:30', task:'午餐（若饿）', tag:'🟡 按需补碳', detail:'肉150g(蛋白30g) + 蔬菜 + 米饭半碗(碳水35g)' },
+    { time:'18:30', task:'晚餐', tag:'🔵 降碳水', detail:'肉150g(蛋白30g) + 蔬菜　→ 晚上不吃米饭，今日碳水已够' },
+  ]},
+};
+
+const MACROS = {
+  high:{ cal:'2400', pro:'180', carb:'220', fat:'70' },
+  mid: { cal:'2200', pro:'180', carb:'160', fat:'70' },
+  low: { cal:'1900', pro:'180', carb:'80',  fat:'90' },
+};
+
+function t2m(s){ const[h,m]=s.split(':').map(Number); return h*60+m; }
+
+function setOverride(btn, key) {
+  todayOverride = key;
+  document.querySelectorAll('.ovr-btn').forEach(b=>b.classList.remove('active-ovr'));
+  btn.classList.add('active-ovr');
+  document.getElementById('overrideHint').classList.add('visible');
+  document.getElementById('overrideChip').style.display='';
+  render();
+}
+
+function resetOverride() {
+  todayOverride = null;
+  document.querySelectorAll('.ovr-btn').forEach(b=>b.classList.remove('active-ovr'));
+  document.getElementById('overrideHint').classList.remove('visible');
+  document.getElementById('overrideChip').style.display='none';
+  render();
+}
+
+function render() {
+  const now = new Date();
+  const dow = now.getDay();
+  const nowMin = now.getHours()*60+now.getMinutes();
+
+  document.getElementById('clock').textContent =
+    String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('dateStr').textContent =
+    `${now.getMonth()+1}/${now.getDate()} 周${DAYS[dow]}`;
+
+  const key = todayOverride ? OVERRIDE_MAP[todayOverride] : dow;
+  const day = PLAN[key];
+
+  // Hero
+  const chip = document.getElementById('dayChip');
+  chip.textContent = {train:'训练日',rest:'休息日',cardio:'有氧日'}[day.type];
+  chip.className = `day-chip ${day.chipClass}`;
+  document.getElementById('dayTitle').textContent = day.label;
+
+  const [dietTxt, dietCls] = {
+    high:['🔴  高碳日  ·  2400 kcal','diet-high'],
+    mid: ['🟡  中碳日  ·  2200 kcal','diet-mid'],
+    low: ['🔵  低碳日  ·  1900 kcal','diet-low'],
+  }[day.diet];
+  const db = document.getElementById('dietBadge');
+  db.textContent = dietTxt; db.className = `diet-badge ${dietCls}`;
+
+  // Timeline
+  const tl = day.tl || LOW_TL;
+  let activeIdx = -1;
+  const tlHTML = tl.map((item,i) => {
+    const t = t2m(item.time);
+    const nt = i+1 < tl.length ? t2m(tl[i+1].time) : 1440;
+    let cls = '';
+    if (nowMin >= t && nowMin < nt) { cls='active'; activeIdx=i; }
+    else if (nowMin >= nt) cls='past';
+    const tagHTML = item.tag ? `<span class="tl-tag">${item.tag}</span>` : '';
+    return `<div class="tl-item ${cls}">
+      <div class="tl-time">${item.time}</div>
+      <div class="tl-spine"><div class="tl-dot"></div><div class="tl-vline"></div></div>
+      <div class="tl-body">
+        <div class="tl-task-row"><span class="tl-task">${item.task}</span>${tagHTML}</div>
+        <div class="tl-detail">${item.detail}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('timeline').innerHTML = tlHTML;
+
+  // Now card
+  let cur=null, nxt=null;
+  if (activeIdx>=0){ cur=tl[activeIdx]; nxt=tl[activeIdx+1]||null; }
+  else { for(let i=0;i<tl.length;i++){ if(nowMin<t2m(tl[i].time)){nxt=tl[i];break;} } }
+
+  if(cur){
+    document.getElementById('nowTask').textContent = cur.task.toUpperCase();
+    document.getElementById('nowDetail').textContent = cur.detail;
+  } else if(nxt){
+    document.getElementById('nowTask').textContent = `准备：${nxt.task}`;
+    document.getElementById('nowDetail').textContent = nxt.detail;
+  } else {
+    document.getElementById('nowTask').textContent = '今日任务完成';
+    document.getElementById('nowDetail').textContent = '好好休息，明天继续';
+  }
+  const nx = document.getElementById('nowNext');
+  if(cur && nxt){
+    nx.style.display='flex';
+    document.getElementById('nowNextTime').textContent=nxt.time;
+    document.getElementById('nowNextTask').textContent=nxt.task;
+  } else { nx.style.display='none'; }
+
+  // Macros
+  const mac = MACROS[day.diet];
+  document.getElementById('macroGrid').innerHTML = `
+    <div class="macro-item macro-cal"><div class="macro-lbl">热量</div><div class="macro-val">${mac.cal}<span class="macro-unit">kcal</span></div></div>
+    <div class="macro-item macro-pro"><div class="macro-lbl">蛋白质</div><div class="macro-val">${mac.pro}<span class="macro-unit">g</span></div></div>
+    <div class="macro-item macro-carb"><div class="macro-lbl">碳水</div><div class="macro-val">${mac.carb}<span class="macro-unit">g</span></div></div>
+    <div class="macro-item macro-fat"><div class="macro-lbl">脂肪</div><div class="macro-val">${mac.fat}<span class="macro-unit">g</span></div></div>`;
+
+  // Suppl
+  const isActive = day.type !== 'rest';
+  const suppls = isActive
+    ? [{i:'💊',t:'蛋白粉 1勺',w:'练后'},{i:'⚗️',t:'肌酸 5g',w:'练后'},{i:'🥛',t:'蛋白粉（缺口时）',w:'睡前'}]
+    : [{i:'⚗️',t:'肌酸 5g',w:'午餐后'},{i:'🥛',t:'蛋白粉 1勺',w:'睡前'}];
+  document.getElementById('supplList').innerHTML = suppls.map(s=>
+    `<div class="suppl-item"><span class="suppl-icon">${s.i}</span><span class="suppl-text">${s.t}</span><span class="suppl-when">${s.w}</span></div>`
+  ).join('');
+
+  // Spine
+  const spineExtraEl = document.getElementById('spineExtra');
+  const spineLabelEl = document.getElementById('spineLabel');
+  if(day.spineExtra){
+    spineLabelEl.innerHTML = '胸椎专项 · 今日重点<span style="flex:1;height:1px;background:var(--border);display:inline-block;margin-left:10px;vertical-align:middle"></span>';
+    spineExtraEl.innerHTML = `<div class="spine-extra">${day.spineExtra}</div>`;
+  } else {
+    spineLabelEl.innerHTML = '胸椎松动 · 每2小时<span style="flex:1;height:1px;background:var(--border);display:inline-block;margin-left:10px;vertical-align:middle"></span>';
+    spineExtraEl.innerHTML = '';
+  }
+}
+
+render();
+setInterval(render, 10000);
+</script>
+</body>
+</html>
