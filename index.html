@@ -491,40 +491,41 @@ let scanFoodLog=[];
 function calcMacros(height,weight,tier,dietType){
   // BMR (male, Mifflin-St Jeor)
   const bmr=10*weight+6.25*height-5*30+5; // age assumed 30
-  // Activity: sedentary office + 3x lifting = lightly active ~1.55
-  const tdee=Math.round(bmr*1.55);
+  // Activity: WFH desk job + 3x/week gym = lightly active 1.375
+  // (NOT 1.55 which assumes moderate daily activity — WFH is sedentary base)
+  const tdee=Math.round(bmr*1.375);
 
   // Deficit by tier
   const deficits={strict:500,normal:300,loose:100};
   const deficit=deficits[tier];
 
-  // Base daily target
+  // Base daily calorie target
   const baseCal=tdee-deficit;
 
-  // Protein: 1.8g/kg for recomp (high end, muscle preservation)
+  // Protein: 1.8g/kg for recomp
   const pro=Math.round(weight*1.8);
   const proCal=pro*4;
 
-  // Carb/fat split by diet type
+  // Carb/fat split by diet type — always derived from baseCal, never exceed it
   let carb,fat,cal;
   if(dietType==='high'){
-    // Train day: higher carb for performance+synthesis
-    const carbMult={strict:1.0,normal:1.15,loose:1.3}[tier];
-    carb=Math.round((weight*2.2)*carbMult);
-    cal=Math.max(baseCal, proCal+carb*4+60*9); // floor at maintenance of macros
-    fat=Math.round((cal-proCal-carb*4)/9);
-    if(fat<55) fat=55; // min fat for hormones
+    // Train day: ~45% cal from carb, rest fat
+    const carbRatio={strict:0.40,normal:0.45,loose:0.50}[tier];
+    carb=Math.round((baseCal-proCal)*carbRatio/4);
+    fat=Math.round((baseCal-proCal-carb*4)/9);
+    if(fat<55){fat=55;} // hormone floor
     cal=proCal+carb*4+fat*9;
   } else if(dietType==='mid'){
-    // Cardio day: moderate carb
-    const carbMult={strict:0.7,normal:0.85,loose:1.0}[tier];
-    carb=Math.round((weight*1.6)*carbMult);
-    fat=Math.round(weight*0.8);
+    // Cardio day: ~35% cal from carb
+    const carbRatio={strict:0.30,normal:0.35,loose:0.40}[tier];
+    carb=Math.round((baseCal-proCal)*carbRatio/4);
+    fat=Math.round((baseCal-proCal-carb*4)/9);
+    if(fat<55) fat=55;
     cal=proCal+carb*4+fat*9;
   } else {
-    // Rest day: low carb, fat compensates
-    const carbMult={strict:0.4,normal:0.6,loose:0.8}[tier];
-    carb=Math.round((weight*0.8)*carbMult);
+    // Rest day: low carb ~20%, fat fills rest
+    const carbRatio={strict:0.15,normal:0.20,loose:0.25}[tier];
+    carb=Math.round((baseCal-proCal)*carbRatio/4);
     fat=Math.round((baseCal-proCal-carb*4)/9);
     if(fat<65) fat=65;
     cal=proCal+carb*4+fat*9;
