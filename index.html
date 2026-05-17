@@ -474,9 +474,13 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 // ═══════════════════════════════════════════════════
 // STORE (memory only, resets on reload)
 // ═══════════════════════════════════════════════════
-const _store={};
-function getData(k){return _store[k]??null;}
-function setData(k,v){_store[k]=v;}
+function getData(k){
+  try{ const v=localStorage.getItem('fitness_'+k); return v!==null?JSON.parse(v):null; }
+  catch{ return null; }
+}
+function setData(k,v){
+  try{ localStorage.setItem('fitness_'+k,JSON.stringify(v)); }catch{}
+}
 
 const DAYS=['日','一','二','三','四','五','六'];
 const DAY_EN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -485,12 +489,12 @@ let todayOverride=null;
 const OVERRIDE_MAP={chest:1,back:2,legs:4,cardio:6,rest:'R'};
 
 // User profile (real-time from settings)
-let userHeight=183; // cm
-let userWeight=106; // kg
-let userAge=28;
-let currentTier='normal'; // strict | normal | loose
-let apiKey='';
-let weightLog=[];
+let userHeight=getData('height')||183;
+let userWeight=getData('weight')||106;
+let userAge=getData('age')||28;
+let currentTier=getData('tier')||'normal';
+let apiKey=''; // never persist API key
+let weightLog=getData('weightLog')||[];
 let scanFoodLog=[];
 
 // ═══════════════════════════════════════════════════
@@ -509,7 +513,7 @@ function calcMacros(height,weight,tier,dietType){
   // Cardio days: moderate-high deficit ~750kcal
   // Rest days: aggressive deficit ~1200kcal (no training = no carb need)
   // Weekly average deficit ~830kcal → ~0.75kg/week loss
-  const tierScale={strict:1.15,normal:1.0,loose:0.85}[tier];
+  const tierScale={strict:0.95,normal:1.0,loose:1.05}[tier];
 
   const proto=Math.round(weight*1.8); // protein constant always
   const protoCal=proto*4;
@@ -688,10 +692,11 @@ function resetOverride(){
 // ═══════════════════════════════════════════════════
 function setTier(tier,btn){
   currentTier=tier;
+  setData('tier',tier);
   document.querySelectorAll('.tier-btn').forEach(b=>b.classList.remove('active-tier'));
   btn.classList.add('active-tier');
   renderNutrition();
-  render(); // update timeline details
+  render();
 }
 
 function renderNutrition(){
@@ -978,15 +983,16 @@ function saveWeight(){
   if(idx>=0) weightLog.splice(idx,1);
   weightLog.unshift({date:dateStr,val,fat:fat!==null&&!isNaN(fat)?fat:null});
   weightLog.sort((a,b)=>b.date.localeCompare(a.date));
+  setData('weightLog',weightLog);
   // Also update userWeight to latest measurement
-  userWeight=val;
+  userWeight=val; setData('weight',val);
   document.getElementById('weightSettingInput').value=val;
   closeWeightModal();
   renderWeightTab();
   renderNutrition();
   render();
 }
-function deleteWeight(i){weightLog.splice(i,1);renderWeightTab();}
+function deleteWeight(i){weightLog.splice(i,1);setData('weightLog',weightLog);renderWeightTab();}
 
 function renderWeightTab(){
   const latest=weightLog[0]||null;
@@ -1062,17 +1068,17 @@ function saveSetting(type){
   if(type==='height'){
     const v=parseInt(document.getElementById('heightInput').value);
     if(isNaN(v)||v<140||v>220) return;
-    userHeight=v;
+    userHeight=v; setData('height',v);
     showHint('bodyHint',`✓ 身高已更新为 ${v}cm`);
   } else if(type==='weight'){
     const v=parseFloat(document.getElementById('weightSettingInput').value);
     if(isNaN(v)||v<40||v>200) return;
-    userWeight=v;
+    userWeight=v; setData('weight',v);
     showHint('bodyHint',`✓ 体重已更新为 ${v}kg`);
   } else if(type==='age'){
     const v=parseInt(document.getElementById('ageInput').value);
     if(isNaN(v)||v<15||v>80) return;
-    userAge=v;
+    userAge=v; setData('age',v);
     showHint('bodyHint',`✓ 年龄已更新为 ${v}岁`);
   }
   renderNutrition();renderWeightTab();render();renderShopping();
