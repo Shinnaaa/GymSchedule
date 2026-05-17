@@ -8,484 +8,241 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Barlow:wght@400;500;600&display=swap');
 
 :root {
-  --bg: #080a0c;
-  --surface: #0d1014;
-  --surface2: #111518;
-  --border: #1e2428;
-  --border2: #252c32;
-  --text: #d4dde4;
-  --muted: #4a5560;
-  --muted2: #2e3840;
-  --lime: #b8ff3c;
-  --orange: #ff6020;
-  --cyan: #20c8e8;
-  --yellow: #ffc840;
-  --red: #ff3c50;
-  --blue: #3c88ff;
-  --white: #eef2f5;
+  --bg:#080a0c; --surface:#0d1014; --surface2:#111518;
+  --border:#1e2428; --border2:#252c32;
+  --text:#d4dde4; --muted:#4a5560; --muted2:#2e3840;
+  --lime:#b8ff3c; --orange:#ff6020; --cyan:#20c8e8;
+  --yellow:#ffc840; --blue:#3c88ff; --white:#eef2f5;
 }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;padding:0 0 80px;font-size:14px;}
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,10,12,0.97);backdrop-filter:blur(10px);z-index:20;}
+.logo{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;letter-spacing:5px;color:var(--lime);text-transform:uppercase;}
+.topbar-right{display:flex;align-items:baseline;gap:10px;}
+.clock-main{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:800;color:var(--white);letter-spacing:-1px;line-height:1;}
+.clock-date{font-size:11px;color:var(--muted);letter-spacing:1px;font-weight:500;}
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Barlow', sans-serif;
-  min-height: 100vh;
-  padding: 0 0 60px;
-  font-size: 14px;
-}
+/* WEEK BANNER */
+.week-banner{display:flex;align-items:center;justify-content:space-between;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);}
+.week-info{display:flex;align-items:center;gap:10px;}
+.week-num{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:var(--lime);letter-spacing:2px;text-transform:uppercase;}
+.week-note{font-size:11px;color:var(--muted);}
+.weight-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 12px 3px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;transition:all .12s;}
+.weight-btn:hover{color:var(--cyan);border-color:var(--cyan);}
 
-/* TOP BAR */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px 12px;
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  background: rgba(8,10,12,0.97);
-  backdrop-filter: blur(10px);
-  z-index: 10;
-}
-
-.logo {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 17px;
-  font-weight: 900;
-  letter-spacing: 5px;
-  color: var(--lime);
-  text-transform: uppercase;
-}
-
-.topbar-right {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
-.clock-main {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 30px;
-  font-weight: 800;
-  color: var(--white);
-  letter-spacing: -1px;
-  line-height: 1;
-}
-
-.clock-date {
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 1px;
-  font-weight: 500;
-}
+/* DAY PICKER */
+.day-picker{display:flex;gap:0;padding:0 20px;margin:14px 0 0;overflow-x:auto;scrollbar-width:none;}
+.day-picker::-webkit-scrollbar{display:none;}
+.dp-item{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 12px;cursor:pointer;border-bottom:2px solid transparent;transition:all .12s;}
+.dp-item:hover .dp-dow{color:var(--text);}
+.dp-item.active{border-bottom-color:var(--lime);}
+.dp-item.active .dp-dow{color:var(--lime);}
+.dp-item.active .dp-dot{background:var(--lime);}
+.dp-dow{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.dp-date{font-size:10px;color:var(--muted2);}
+.dp-dot{width:5px;height:5px;border-radius:50%;background:var(--border2);}
+.dp-dot.train{background:var(--orange);}
+.dp-dot.cardio{background:var(--yellow);}
+.dp-dot.rest{background:var(--blue);}
+.dp-today-marker{font-size:9px;color:var(--lime);font-weight:700;letter-spacing:1px;}
 
 /* HERO */
-.hero {
-  padding: 20px 20px 0;
-  animation: fadeUp 0.35s ease both;
-}
+.hero{padding:16px 20px 0;animation:fadeUp .35s ease both;}
+.day-type-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.day-chip{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;padding:3px 10px 2px;}
+.chip-train{background:var(--orange);color:#fff;}
+.chip-rest{background:var(--blue);color:#fff;}
+.chip-cardio{background:var(--yellow);color:#000;}
+.chip-ovr{background:var(--cyan);color:#000;font-size:9px;}
+.day-title{font-family:'Barlow Condensed',sans-serif;font-size:44px;font-weight:900;letter-spacing:-1.5px;line-height:1;color:var(--white);text-transform:uppercase;}
+.diet-badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.diet-high{color:var(--orange);} .diet-mid{color:var(--yellow);} .diet-low{color:var(--blue);}
 
-.day-type-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.day-chip {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  padding: 3px 10px 2px;
-}
-.chip-train  { background: var(--orange); color: #fff; }
-.chip-rest   { background: var(--blue);   color: #fff; }
-.chip-cardio { background: var(--yellow); color: #000; }
-.chip-ovr    { background: var(--cyan);   color: #000; font-size: 9px; }
-
-.day-title {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 44px;
-  font-weight: 900;
-  letter-spacing: -1.5px;
-  line-height: 1;
-  color: var(--white);
-  text-transform: uppercase;
-}
-
-.diet-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 10px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-.diet-high { color: var(--orange); }
-.diet-mid  { color: var(--yellow); }
-.diet-low  { color: var(--blue); }
-
-/* NOW CARD */
-.now-card {
-  margin: 16px 20px 0;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-left: 3px solid var(--lime);
-  padding: 14px 16px;
-  animation: fadeUp 0.35s 0.05s ease both;
-}
-
-.now-eyebrow {
-  font-size: 10px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--lime);
-  margin-bottom: 6px;
-  font-weight: 700;
-}
-
-.now-task {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--white);
-  letter-spacing: -0.5px;
-  line-height: 1.1;
-  text-transform: uppercase;
-}
-
-.now-detail {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 4px;
-  line-height: 1.6;
-}
-
-.now-next {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-  font-size: 11px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.now-next-time {
-  color: var(--cyan);
-  font-weight: 700;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 14px;
-}
+/* NOW CARD — only show for today */
+.now-card{margin:14px 20px 0;background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--lime);padding:14px 16px;}
+.now-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--lime);margin-bottom:6px;font-weight:700;}
+.now-task{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:var(--white);letter-spacing:-0.5px;line-height:1.1;text-transform:uppercase;}
+.now-detail{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;}
+.now-next{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.now-next-time{color:var(--cyan);font-weight:700;font-family:'Barlow Condensed',sans-serif;font-size:14px;}
 
 /* OVERRIDE */
-.override-section {
-  margin: 14px 20px 0;
-  animation: fadeUp 0.35s 0.08s ease both;
-}
+.override-section{margin:14px 20px 0;}
+.sec-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.override-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.ovr-btn{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 12px 5px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .12s;}
+.ovr-btn:hover{color:var(--text);background:#161c22;border-color:#333;}
+.ovr-btn.active-ovr{background:var(--cyan);color:#000;border-color:var(--cyan);}
+.ovr-btn.reset-btn{color:var(--muted2);border-color:var(--border);}
+.ovr-btn.reset-btn:hover{color:var(--orange);border-color:var(--orange);background:rgba(255,96,32,.06);}
+.override-hint{margin-top:8px;font-size:10px;color:var(--cyan);letter-spacing:1px;display:none;font-weight:600;}
+.override-hint.visible{display:block;}
 
-.sec-label {
-  font-size: 10px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 700;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.sec-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
+/* SECTION */
+.section{margin:16px 20px 0;}
 
-.override-btns {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.ovr-btn {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 6px 12px 5px;
-  border: 1px solid var(--border2);
-  background: var(--surface2);
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.12s;
-}
-
-.ovr-btn:hover { color: var(--text); background: #161c22; border-color: #333; }
-.ovr-btn.active-ovr { background: var(--cyan); color: #000; border-color: var(--cyan); }
-.ovr-btn.reset-btn { color: var(--muted2); border-color: var(--border); }
-.ovr-btn.reset-btn:hover { color: var(--orange); border-color: var(--orange); background: rgba(255,96,32,0.06); }
-
-.override-hint {
-  margin-top: 8px;
-  font-size: 10px;
-  color: var(--cyan);
-  letter-spacing: 1px;
-  display: none;
-  font-weight: 600;
-}
-.override-hint.visible { display: block; }
-
-/* SECTIONS */
-.section {
-  margin: 16px 20px 0;
-  animation: fadeUp 0.35s ease both;
-}
+/* TABS */
+.tab-bar{display:flex;gap:0;margin:14px 20px 0;border-bottom:1px solid var(--border);}
+.tab-btn{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:8px 16px 7px;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--lime);border-bottom-color:var(--lime);}
+.tab-panel{display:none;} .tab-panel.active{display:block;}
 
 /* TIMELINE */
-.timeline { display: flex; flex-direction: column; }
-
-.tl-item {
-  display: grid;
-  grid-template-columns: 44px 16px 1fr;
-  gap: 0;
-  padding-bottom: 14px;
-}
-.tl-item:last-child { padding-bottom: 0; }
-
-.tl-time {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted);
-  text-align: right;
-  padding-top: 3px;
-  padding-right: 10px;
-  letter-spacing: 0.3px;
-}
-
-.tl-spine {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.tl-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--border2);
-  flex-shrink: 0;
-  margin-top: 5px;
-  transition: all 0.2s;
-}
-
-.tl-vline {
-  width: 1px;
-  flex: 1;
-  background: var(--border);
-  min-height: 18px;
-  margin-top: 3px;
-}
-.tl-item:last-child .tl-vline { display: none; }
-
-.tl-body { padding-left: 10px; }
-
-.tl-task {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  line-height: 1.2;
-}
-
-.tl-detail {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 2px;
-  line-height: 1.5;
-}
-
-.tl-item.active .tl-time { color: var(--lime); }
-.tl-item.active .tl-dot { background: var(--lime); box-shadow: 0 0 8px rgba(184,255,60,0.6); width: 9px; height: 9px; margin-top: 4px; }
-.tl-item.active .tl-task { color: var(--lime); }
-.tl-item.active .tl-detail { color: #7a9a50; }
-
-.tl-item.past .tl-time,
-.tl-item.past .tl-task,
-.tl-item.past .tl-detail { color: var(--muted2); }
-.tl-item.past .tl-dot { background: var(--muted2); }
+.timeline{display:flex;flex-direction:column;}
+.tl-item{display:grid;grid-template-columns:44px 16px 1fr;gap:0;padding-bottom:14px;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-time{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:var(--muted);text-align:right;padding-top:3px;padding-right:10px;letter-spacing:.3px;}
+.tl-spine{display:flex;flex-direction:column;align-items:center;}
+.tl-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:5px;transition:all .2s;}
+.tl-vline{width:1px;flex:1;background:var(--border);min-height:18px;margin-top:3px;}
+.tl-item:last-child .tl-vline{display:none;}
+.tl-body{padding-left:10px;}
+.tl-task-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tl-task{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.3px;line-height:1.2;}
+.tl-tag{font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);padding:1px 7px;white-space:nowrap;}
+.tl-detail{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5;}
+.tl-item.active .tl-time{color:var(--lime);}
+.tl-item.active .tl-dot{background:var(--lime);box-shadow:0 0 8px rgba(184,255,60,.6);width:9px;height:9px;margin-top:4px;}
+.tl-item.active .tl-task{color:var(--lime);}
+.tl-item.active .tl-detail{color:#7a9a50;}
+.tl-item.active .tl-tag{color:var(--lime);border-color:rgba(184,255,60,.3);background:rgba(184,255,60,.06);}
+.tl-item.past .tl-time,.tl-item.past .tl-task,.tl-item.past .tl-detail{color:var(--muted2);}
+.tl-item.past .tl-dot{background:var(--muted2);}
+.tl-item.past .tl-tag{color:var(--muted2);border-color:var(--border);background:transparent;}
 
 /* MACROS */
-.macro-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-}
-
-.macro-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 12px 14px 14px;
-  position: relative;
-  overflow: hidden;
-}
-
-.macro-item::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0;
-  width: 100%; height: 2px;
-}
-.macro-cal::after  { background: var(--orange); }
-.macro-pro::after  { background: var(--lime); }
-.macro-carb::after { background: var(--cyan); }
-.macro-fat::after  { background: var(--yellow); }
-
-.macro-lbl {
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.macro-val {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 30px;
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -1px;
-}
-.macro-cal  .macro-val { color: var(--orange); }
-.macro-pro  .macro-val { color: var(--lime); }
-.macro-carb .macro-val { color: var(--cyan); }
-.macro-fat  .macro-val { color: var(--yellow); }
-
-.macro-unit {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted);
-  margin-left: 2px;
-  letter-spacing: 0;
-}
+.macro-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.macro-item{background:var(--surface);border:1px solid var(--border);padding:12px 14px 14px;position:relative;overflow:hidden;}
+.macro-item::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;}
+.macro-cal::after{background:var(--orange);} .macro-pro::after{background:var(--lime);}
+.macro-carb::after{background:var(--cyan);} .macro-fat::after{background:var(--yellow);}
+.macro-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px;}
+.macro-val{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;line-height:1;letter-spacing:-1px;}
+.macro-cal .macro-val{color:var(--orange);} .macro-pro .macro-val{color:var(--lime);}
+.macro-carb .macro-val{color:var(--cyan);} .macro-fat .macro-val{color:var(--yellow);}
+.macro-unit{font-size:12px;font-weight:600;color:var(--muted);margin-left:2px;letter-spacing:0;}
 
 /* SUPPL */
-.suppl-list { display: flex; flex-direction: column; gap: 6px; }
-
-.suppl-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 10px 14px;
-}
-
-.suppl-icon { font-size: 15px; flex-shrink: 0; }
-.suppl-text { font-size: 13px; color: var(--text); font-weight: 500; }
-.suppl-when {
-  margin-left: auto;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--muted);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
+.suppl-list{display:flex;flex-direction:column;gap:6px;}
+.suppl-item{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);padding:10px 14px;}
+.suppl-icon{font-size:15px;flex-shrink:0;}
+.suppl-text{font-size:13px;color:var(--text);font-weight:500;}
+.suppl-when{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
 
 /* SPINE */
-.spine-extra {
-  margin-bottom: 10px;
-  padding: 10px 14px;
-  background: rgba(32,200,232,0.05);
-  border: 1px solid rgba(32,200,232,0.18);
-  font-size: 12px;
-  color: var(--cyan);
-  line-height: 1.6;
-  font-weight: 500;
-}
+.spine-extra{margin-bottom:10px;padding:10px 14px;background:rgba(32,200,232,.05);border:1px solid rgba(32,200,232,.18);font-size:12px;color:var(--cyan);line-height:1.6;font-weight:500;}
+.spine-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.spine-item{background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--cyan);padding:10px 12px;font-size:12px;color:var(--text);font-weight:500;line-height:1.4;}
+.spine-sub{display:block;font-size:11px;color:var(--muted);margin-top:2px;}
 
-.spine-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-}
+/* SHOPPING LIST */
+.shop-day{margin-bottom:16px;}
+.shop-day-hd{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.shop-day-hd span{font-size:10px;padding:2px 8px;font-weight:700;letter-spacing:1px;}
+.shop-items{display:flex;flex-direction:column;gap:5px;}
+.shop-item{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);padding:9px 14px;cursor:pointer;transition:all .1s;}
+.shop-item:hover{border-color:var(--border2);}
+.shop-item.checked{opacity:.4;}
+.shop-check{width:16px;height:16px;border:1px solid var(--border2);border-radius:1px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--lime);}
+.shop-item.checked .shop-check{background:var(--lime);border-color:var(--lime);color:#000;}
+.shop-name{font-size:13px;color:var(--text);font-weight:500;flex:1;}
+.shop-qty{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.5px;}
+.shop-reset{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 14px 5px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;margin-top:12px;transition:all .12s;}
+.shop-reset:hover{color:var(--orange);border-color:var(--orange);}
 
-.spine-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 2px solid var(--cyan);
-  padding: 10px 12px;
-  font-size: 12px;
-  color: var(--text);
-  font-weight: 500;
-  line-height: 1.4;
-}
+/* WEIGHT */
+.weight-section{padding:0;}
+.weight-log{display:flex;flex-direction:column;gap:5px;}
+.weight-entry{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);padding:9px 14px;}
+.weight-entry-date{font-size:11px;color:var(--muted);font-weight:500;min-width:70px;}
+.weight-entry-val{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--white);}
+.weight-entry-fat{font-size:11px;color:var(--cyan);font-weight:600;margin-left:2px;}
+.weight-entry-delta{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;margin-left:auto;}
+.delta-down{color:var(--lime);} .delta-up{color:var(--orange);} .delta-flat{color:var(--muted);}
+.weight-del{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:14px;padding:0 4px;margin-left:4px;}
+.weight-del:hover{color:var(--orange);}
+.weight-empty{font-size:12px;color:var(--muted);padding:16px 0;text-align:center;}
+.weight-goal{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--muted);}
+.weight-goal strong{color:var(--lime);font-family:'Barlow Condensed',sans-serif;font-size:16px;}
 
-.spine-sub {
-  display: block;
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 2px;
-}
+/* STATS ROW */
+.wt-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.wt-stat{background:var(--surface);border:1px solid var(--border);padding:10px 12px;}
+.wt-stat-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:4px;}
+.wt-stat-val{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;line-height:1;color:var(--white);}
+.wt-stat-unit{font-size:11px;color:var(--muted);font-weight:600;}
+.wt-stat-sub{font-size:10px;color:var(--muted);margin-top:3px;}
 
-.tl-task-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
+/* GAUGES */
+.gauge-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.gauge-card{background:var(--surface);border:1px solid var(--border);padding:14px 14px 10px;}
+.gauge-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px;}
+.gauge-wrap{position:relative;width:100%;height:10px;background:var(--border2);border-radius:0;overflow:hidden;margin-bottom:8px;}
+.gauge-track{height:100%;border-radius:0;transition:width .5s ease;}
+.gauge-val{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:var(--white);line-height:1;}
+.gauge-unit{font-size:11px;color:var(--muted);font-weight:600;margin-left:2px;}
+.gauge-range{font-size:10px;color:var(--muted);margin-top:3px;}
+.gauge-status{font-size:11px;font-weight:700;margin-top:4px;}
 
-.tl-tag {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: var(--muted);
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  padding: 1px 7px;
-  white-space: nowrap;
-}
+/* CHART */
+#weightChart{border:1px solid var(--border);background:var(--surface);}
 
-.tl-item.active .tl-tag {
-  color: var(--lime);
-  border-color: rgba(184,255,60,0.3);
-  background: rgba(184,255,60,0.06);
-}
+/* SETTINGS */
+.setting-row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);padding:10px 14px;}
+.setting-label{font-size:12px;color:var(--muted);font-weight:600;min-width:40px;}
+.setting-input-wrap{display:flex;align-items:center;gap:6px;flex:1;}
+.setting-input{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;background:var(--bg);border:1px solid var(--border2);color:var(--white);padding:6px 10px;width:80px;outline:none;letter-spacing:.5px;}
+.setting-input:focus{border-color:var(--lime);}
+.setting-unit{font-size:12px;color:var(--muted);font-weight:600;}
+.setting-save{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 14px 5px;border:1px solid var(--lime);background:transparent;color:var(--lime);cursor:pointer;transition:all .12s;}
+.setting-save:hover{background:var(--lime);color:#000;}
+.setting-hint{font-size:11px;color:var(--lime);margin-top:6px;display:none;}
+.setting-hint.visible{display:block;}
 
-.tl-item.past .tl-tag {
-  color: var(--muted2);
-  border-color: var(--border);
-  background: transparent;
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:50;display:flex;align-items:center;justify-content:center;}
+.modal{background:var(--surface);border:1px solid var(--border2);padding:20px;width:300px;}
+.modal h3{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--white);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
+.modal-field-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px;}
+.modal-input{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;background:var(--bg);border:1px solid var(--border2);color:var(--white);padding:10px 14px;width:100%;outline:none;letter-spacing:.5px;display:block;}
+.modal-input:focus{border-color:var(--lime);}
+.modal-btns{display:flex;gap:8px;margin-top:14px;}
+.modal-ok{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 18px 7px;border:1px solid var(--lime);background:transparent;color:var(--lime);cursor:pointer;flex:1;transition:all .12s;}
+.modal-ok:hover{background:var(--lime);color:#000;}
+.modal-cancel{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 18px 7px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;transition:all .12s;}
+.modal-cancel:hover{color:var(--text);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
 
+<!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">Fitness OS</div>
   <div class="topbar-right">
     <div class="clock-main" id="clock">--:--</div>
-    <div class="clock-date" id="dateStr">--</div>
+    <div class="clock-date" id="clockDate">--</div>
   </div>
 </div>
 
+<!-- WEEK BANNER -->
+<div class="week-banner">
+  <div class="week-info">
+    <span class="week-num" id="weekNum">--</span>
+    <span class="week-note" id="weekNote">--</span>
+  </div>
+  <button class="weight-btn" onclick="openWeightModal()">+ 记录体重</button>
+</div>
+
+<!-- DAY PICKER -->
+<div class="day-picker" id="dayPicker"></div>
+
+<!-- HERO -->
 <div class="hero">
   <div class="day-type-row">
     <div class="day-chip" id="dayChip">--</div>
@@ -495,7 +252,8 @@ body {
   <div class="diet-badge" id="dietBadge">--</div>
 </div>
 
-<div class="now-card">
+<!-- NOW CARD -->
+<div class="now-card" id="nowCard">
   <div class="now-eyebrow">▶ 现在该做什么</div>
   <div class="now-task" id="nowTask">--</div>
   <div class="now-detail" id="nowDetail">--</div>
@@ -506,7 +264,8 @@ body {
   </div>
 </div>
 
-<div class="override-section">
+<!-- OVERRIDE (today only) -->
+<div class="override-section" id="overrideSection">
   <div class="sec-label">今日改为</div>
   <div class="override-btns">
     <button class="ovr-btn" onclick="setOverride(this,'chest')">胸+肩+三头</button>
@@ -519,137 +278,690 @@ body {
   <div class="override-hint" id="overrideHint">⚡ 已手动覆盖 · 刷新后自动恢复默认</div>
 </div>
 
-<div class="section" style="animation-delay:0.06s">
-  <div class="sec-label">今日时间线</div>
-  <div class="timeline" id="timeline"></div>
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('timeline',this)">时间线</button>
+  <button class="tab-btn" onclick="switchTab('nutrition',this)">饮食</button>
+  <button class="tab-btn" onclick="switchTab('shopping',this)">购物清单</button>
+  <button class="tab-btn" onclick="switchTab('weight',this)">体重</button>
 </div>
 
-<div class="section" style="animation-delay:0.10s">
-  <div class="sec-label">饮食目标</div>
-  <div class="macro-grid" id="macroGrid"></div>
+<!-- TAB: TIMELINE -->
+<div class="tab-panel active" id="tab-timeline">
+  <div class="section">
+    <div class="timeline" id="timeline"></div>
+  </div>
+  <div class="section" style="margin-top:20px;">
+    <div class="sec-label" id="spineLabel">胸椎松动 · 每2小时</div>
+    <div id="spineExtra"></div>
+    <div class="spine-grid">
+      <div class="spine-item">椅背顶胸椎后仰<span class="spine-sub">30秒 × 3</span></div>
+      <div class="spine-item">猫牛式<span class="spine-sub">10次 慢速</span></div>
+      <div class="spine-item">坐姿胸椎旋转<span class="spine-sub">每侧10次</span></div>
+      <div class="spine-item">俯卧抬胸<span class="spine-sub">10次</span></div>
+    </div>
+  </div>
 </div>
 
-<div class="section" style="animation-delay:0.14s">
-  <div class="sec-label">补剂</div>
-  <div class="suppl-list" id="supplList"></div>
+<!-- TAB: NUTRITION -->
+<div class="tab-panel" id="tab-nutrition">
+  <div class="section">
+    <div class="sec-label">今日饮食目标</div>
+    <div class="macro-grid" id="macroGrid"></div>
+  </div>
+  <div class="section" style="margin-top:16px;">
+    <div class="sec-label">补剂</div>
+    <div class="suppl-list" id="supplList"></div>
+  </div>
 </div>
 
-<div class="section" style="animation-delay:0.18s">
-  <div class="sec-label" id="spineLabel">胸椎松动 · 每2小时</div>
-  <div id="spineExtra"></div>
-  <div class="spine-grid">
-    <div class="spine-item">椅背顶胸椎后仰<span class="spine-sub">30秒 × 3</span></div>
-    <div class="spine-item">猫牛式<span class="spine-sub">10次 慢速</span></div>
-    <div class="spine-item">坐姿胸椎旋转<span class="spine-sub">每侧10次</span></div>
-    <div class="spine-item">俯卧抬胸<span class="spine-sub">10次</span></div>
+<!-- TAB: SHOPPING -->
+<div class="tab-panel" id="tab-shopping">
+  <div class="section">
+    <div id="shopContent"></div>
+  </div>
+</div>
+
+<!-- TAB: WEIGHT -->
+<div class="tab-panel" id="tab-weight">
+  <!-- Stats row -->
+  <div class="section">
+    <div class="wt-stats-row" id="wtStatsRow"></div>
+  </div>
+  <!-- BMI + Body fat gauges -->
+  <div class="section" style="margin-top:12px;">
+    <div class="sec-label">指标</div>
+    <div class="gauge-row" id="gaugeRow"></div>
+  </div>
+  <!-- Chart -->
+  <div class="section" style="margin-top:12px;">
+    <div class="sec-label">体重趋势</div>
+    <canvas id="weightChart" height="160" style="width:100%;display:block;"></canvas>
+    <div id="chartEmpty" class="weight-empty" style="display:none;">暂无数据，记录2条以上后显示图表</div>
+  </div>
+  <!-- Settings: height -->
+  <div class="section" style="margin-top:12px;">
+    <div class="sec-label">设置</div>
+    <div class="setting-row">
+      <span class="setting-label">身高</span>
+      <div class="setting-input-wrap">
+        <input class="setting-input" id="heightInput" type="number" min="140" max="220" placeholder="183" value="183">
+        <span class="setting-unit">cm</span>
+      </div>
+      <button class="setting-save" onclick="saveHeight()">保存</button>
+    </div>
+    <div class="setting-hint" id="heightHint"></div>
+  </div>
+  <!-- Log -->
+  <div class="section" style="margin-top:12px;">
+    <div class="sec-label">记录明细</div>
+    <div class="weight-goal">目标：每周下降 <strong>0.5–1 kg</strong> · 每周一早起空腹称</div>
+    <div class="weight-log" id="weightLog"></div>
+  </div>
+</div>
+
+<!-- WEIGHT MODAL -->
+<div class="modal-overlay" id="weightModal" style="display:none">
+  <div class="modal">
+    <h3>记录体重</h3>
+    <div class="modal-field-label">体重 (kg)</div>
+    <input class="modal-input" id="weightInput" type="number" step="0.1" min="40" max="200" placeholder="106.0">
+    <div class="modal-field-label" style="margin-top:10px;">体脂率 (%) <span style="color:var(--muted);font-size:10px;font-weight:400;letter-spacing:0;">可选</span></div>
+    <input class="modal-input" id="fatInput" type="number" step="0.1" min="3" max="60" placeholder="留空跳过">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;margin-top:4px;" id="modalDateHint">--</div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeWeightModal()">取消</button>
+      <button class="modal-ok" onclick="saveWeight()">保存</button>
+    </div>
   </div>
 </div>
 
 <script>
-const DAYS = ['日','一','二','三','四','五','六'];
+// ── DATA ──────────────────────────────────────────────
+const DAYS=['日','一','二','三','四','五','六'];
+const DAY_EN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+let viewDow = new Date().getDay(); // which day is shown
 let todayOverride = null;
+const OVERRIDE_MAP={chest:1,back:2,legs:4,cardio:6,rest:'R'};
 
-const OVERRIDE_MAP = { chest:1, back:2, legs:4, cardio:6, rest:'R' };
+// Week counter: started Monday 2025-05-19 (adjust to your actual start)
+// Using stored start date or defaulting to this coming Monday
+function getStartDate(){
+  const s=getData('startDate');
+  if(s) return new Date(s);
+  // Default: next Monday from today
+  const now=new Date();
+  const d=new Date(now);
+  const dayOfWeek=d.getDay();
+  const diff=dayOfWeek===0?1:8-dayOfWeek; // days until Monday
+  d.setDate(d.getDate()+(dayOfWeek===1?0:diff));
+  d.setHours(0,0,0,0);
+  // If today is Monday, start today
+  if(dayOfWeek===1){d.setDate(now.getDate());}
+  return d;
+}
 
-const mkTrainTL = (muscle, note) => [
-  { time:'10:30', task:'练前餐', tag:'🔋 练前能量', detail:'饭团1个(碳水45g) + 水煮蛋1个(蛋白6g)　→ 快消化碳水供能，不要高脂肪' },
-  { time:'11:10', task:'出发健身房', tag:'', detail:'步行10分钟' },
-  { time:'11:20', task:'开始训练', tag:'', detail:`${muscle}${note?' · '+note:''} · 泡沫轴热身2min` },
-  { time:'12:10', task:'练后即刻', tag:'💪 合成窗口', detail:'蛋白粉1勺(蛋白25g) + 肌酸5g 冲水喝　→ 训练后胰岛素敏感性最高，此刻摄入最高效' },
-  { time:'12:30', task:'午餐', tag:'💪 高碳高蛋白', detail:'肉200g(蛋白40g) + 米饭1.5碗(碳水90g) + 蔬菜　→ 碳水集中在练后，补充糖原+促合成' },
-  { time:'18:30', task:'晚餐', tag:'🔵 开始降碳水', detail:'肉150g(蛋白30g) + 米饭半碗(碳水40g) + 蔬菜　→ 碳水减半，蛋白维持' },
-  { time:'22:00', task:'睡前', tag:'🌙 修复补充', detail:'希腊酸奶150g(蛋白15g) 或 蛋白粉1勺(蛋白25g)　→ 当日蛋白不足160g时必吃' },
+function getWeekNum(){
+  const start=getStartDate();
+  const now=new Date(); now.setHours(0,0,0,0);
+  const diff=Math.floor((now-start)/(7*24*3600*1000));
+  return Math.max(1,diff+1);
+}
+
+// Simple in-memory storage (persists across 10s renders, resets on reload)
+const _store={};
+function getData(k){return _store[k]||null;}
+function setData(k,v){_store[k]=v;}
+
+// Shopping list checked state (memory only)
+const shopChecked={};
+
+const mkTrainTL=(muscle,note)=>[
+  {time:'10:30',task:'练前餐',tag:'🔋 练前能量',detail:'饭团1个(碳水45g) + 水煮蛋1个(蛋白6g)　→ 快消化碳水供能，不要高脂肪'},
+  {time:'11:10',task:'出发健身房',tag:'',detail:'步行10分钟'},
+  {time:'11:20',task:'开始训练',tag:'',detail:`${muscle}${note?' · '+note:''} · 泡沫轴热身2min`},
+  {time:'12:10',task:'练后即刻',tag:'💪 合成窗口',detail:'蛋白粉1勺(蛋白25g) + 肌酸5g 冲水喝　→ 训练后胰岛素敏感性最高，此刻摄入最高效'},
+  {time:'12:30',task:'午餐',tag:'💪 高碳高蛋白',detail:'肉200g(蛋白40g) + 米饭1.5碗(碳水90g) + 蔬菜　→ 碳水集中在练后，补充糖原+促合成'},
+  {time:'18:30',task:'晚餐',tag:'🔵 开始降碳水',detail:'肉150g(蛋白30g) + 米饭半碗(碳水40g) + 蔬菜　→ 碳水减半，蛋白维持'},
+  {time:'22:00',task:'睡前',tag:'🌙 修复补充',detail:'希腊酸奶150g(蛋白15g) 或 蛋白粉1勺(蛋白25g)　→ 当日蛋白不足180g时必吃'},
 ];
 
-const LOW_TL = [
-  { time:'09:30', task:'早餐', tag:'🔵 低碳启动', detail:'鸡蛋3个(蛋白18g) + 牛油果半个或坚果一把　→ 几乎零碳水，靠脂肪供能' },
-  { time:'12:30', task:'午餐 + 肌酸5g', tag:'🔵 少碳维持', detail:'肉200g(蛋白40g) + 蔬菜大量 + 米饭半碗(碳水35g)　→ 今日碳水上限80g，这顿用掉一半' },
-  { time:'18:30', task:'晚餐', tag:'🔵 无碳水', detail:'肉150g(蛋白30g) + 豆腐100g(蛋白5g) + 蔬菜　→ 不吃米饭，逼迫身体动员脂肪供能' },
-  { time:'22:00', task:'睡前', tag:'🌙 修复补充', detail:'希腊酸奶150g(蛋白15g) 或 蛋白粉1勺(蛋白25g)　→ 蛋白质每天固定180g，休息日也不能少' },
+const LOW_TL=[
+  {time:'09:30',task:'早餐',tag:'🔵 低碳启动',detail:'鸡蛋3个(蛋白18g) + 牛油果半个或坚果一把　→ 几乎零碳水，靠脂肪供能'},
+  {time:'12:30',task:'午餐 + 肌酸5g',tag:'🔵 少碳维持',detail:'肉200g(蛋白40g) + 蔬菜大量 + 米饭半碗(碳水35g)　→ 今日碳水上限80g，这顿用掉一半'},
+  {time:'18:30',task:'晚餐',tag:'🔵 无碳水',detail:'肉150g(蛋白30g) + 豆腐100g(蛋白5g) + 蔬菜　→ 不吃米饭，逼迫身体动员脂肪供能'},
+  {time:'22:00',task:'睡前',tag:'🌙 修复补充',detail:'希腊酸奶150g(蛋白15g) 或 蛋白粉1勺(蛋白25g)　→ 蛋白质每天固定180g，休息日也不能少'},
 ];
 
-const PLAN = {
-  R: { type:'rest', label:'休息日', chipClass:'chip-rest', diet:'low' },
-  0: { type:'rest', label:'休息日', chipClass:'chip-rest', diet:'low' },
-  1: { type:'train', label:'胸 · 肩 · 三头', chipClass:'chip-train', diet:'high', tl: mkTrainTL('胸/肩/三头') },
-  2: { type:'train', label:'背 · 二头', chipClass:'chip-train', diet:'high', tl: mkTrainTL('背/二头','Face Pull必做') },
-  3: { type:'rest', label:'休息日', chipClass:'chip-rest', diet:'low', spineExtra:'今日胸椎专项：泡沫轴+猫牛+椅背伸展，完整做15分钟' },
-  4: { type:'train', label:'腿 · 臀', chipClass:'chip-train', diet:'high', tl: mkTrainTL('腿/臀') },
-  5: { type:'rest', label:'休息日', chipClass:'chip-rest', diet:'low' },
-  6: { type:'cardio', label:'有氧 · 爬坡走', chipClass:'chip-cardio', diet:'mid', tl:[
-    { time:'10:00', task:'练前餐', tag:'🔋 练前能量', detail:'香蕉1根(碳水25g) + 水煮蛋2个(蛋白12g)　→ 有氧前轻量碳水，不要撑' },
-    { time:'10:40', task:'出发健身房', tag:'', detail:'步行10分钟' },
-    { time:'10:50', task:'爬坡走', tag:'', detail:'坡度8–12% · 时速5–6km/h · 40分钟 · 心率120–140' },
-    { time:'11:30', task:'练后即刻', tag:'💪 合成窗口', detail:'蛋白粉1勺(蛋白25g) + 肌酸5g 冲水喝' },
-    { time:'12:00', task:'早午餐', tag:'🟡 中碳补充', detail:'肉150g(蛋白30g) + 鸡蛋2个(蛋白12g) + 米饭1碗(碳水60g)　→ 有氧后适量碳水，不如训练日多' },
-    { time:'13:30', task:'午餐（若饿）', tag:'🟡 按需补碳', detail:'肉150g(蛋白30g) + 蔬菜 + 米饭半碗(碳水35g)' },
-    { time:'18:30', task:'晚餐', tag:'🔵 降碳水', detail:'肉150g(蛋白30g) + 蔬菜　→ 晚上不吃米饭，今日碳水已够' },
+const PLAN={
+  R:{type:'rest',label:'休息日',chipClass:'chip-rest',diet:'low'},
+  0:{type:'rest',label:'休息日',chipClass:'chip-rest',diet:'low'},
+  1:{type:'train',label:'胸 · 肩 · 三头',chipClass:'chip-train',diet:'high',tl:mkTrainTL('胸/肩/三头')},
+  2:{type:'train',label:'背 · 二头',chipClass:'chip-train',diet:'high',tl:mkTrainTL('背/二头','Face Pull必做')},
+  3:{type:'rest',label:'休息日',chipClass:'chip-rest',diet:'low',spineExtra:'今日胸椎专项：泡沫轴+猫牛+椅背伸展，完整做15分钟'},
+  4:{type:'train',label:'腿 · 臀',chipClass:'chip-train',diet:'high',tl:mkTrainTL('腿/臀')},
+  5:{type:'rest',label:'休息日',chipClass:'chip-rest',diet:'low'},
+  6:{type:'cardio',label:'有氧 · 爬坡走',chipClass:'chip-cardio',diet:'mid',tl:[
+    {time:'10:00',task:'练前餐',tag:'🔋 练前能量',detail:'香蕉1根(碳水25g) + 水煮蛋2个(蛋白12g)　→ 有氧前轻量碳水，不要撑'},
+    {time:'10:40',task:'出发健身房',tag:'',detail:'步行10分钟'},
+    {time:'10:50',task:'爬坡走',tag:'',detail:'坡度8–12% · 时速5–6km/h · 40分钟 · 心率120–140'},
+    {time:'11:30',task:'练后即刻',tag:'💪 合成窗口',detail:'蛋白粉1勺(蛋白25g) + 肌酸5g 冲水喝'},
+    {time:'12:00',task:'早午餐',tag:'🟡 中碳补充',detail:'肉150g(蛋白30g) + 鸡蛋2个(蛋白12g) + 米饭1碗(碳水60g)　→ 有氧后适量碳水'},
+    {time:'13:30',task:'午餐（若饿）',tag:'🟡 按需补碳',detail:'肉150g(蛋白30g) + 蔬菜 + 米饭半碗(碳水35g)'},
+    {time:'18:30',task:'晚餐',tag:'🔵 降碳水',detail:'肉150g(蛋白30g) + 蔬菜　→ 晚上不吃米饭，今日碳水已够'},
   ]},
 };
 
-const MACROS = {
-  high:{ cal:'2400', pro:'180', carb:'220', fat:'70' },
-  mid: { cal:'2200', pro:'180', carb:'160', fat:'70' },
-  low: { cal:'1900', pro:'180', carb:'80',  fat:'90' },
+const MACROS={
+  high:{cal:'2400',pro:'180',carb:'220',fat:'70'},
+  mid:{cal:'2200',pro:'180',carb:'160',fat:'70'},
+  low:{cal:'1900',pro:'180',carb:'80',fat:'90'},
 };
 
-function t2m(s){ const[h,m]=s.split(':').map(Number); return h*60+m; }
+// Shopping list per day type
+const SHOP={
+  train:[
+    {name:'鸡胸肉 / 牛肉 / 鱼',qty:'200g×午餐 + 150g×晚餐'},
+    {name:'米饭（白米）',qty:'1.5碗×午餐 + 半碗×晚餐'},
+    {name:'蔬菜（任意）',qty:'大量，午晚各一份'},
+    {name:'饭团（コンビニ）',qty:'1个，练前备好'},
+    {name:'鸡蛋',qty:'1个，练前'},
+    {name:'希腊酸奶',qty:'150g，睡前备用'},
+  ],
+  rest:[
+    {name:'鸡蛋',qty:'3个，早餐'},
+    {name:'牛油果 或 坚果',qty:'半个 或 一把，早餐'},
+    {name:'鸡胸肉 / 鱼',qty:'200g×午餐 + 150g×晚餐'},
+    {name:'豆腐',qty:'100g，晚餐'},
+    {name:'蔬菜（任意）',qty:'大量，午晚各一份'},
+    {name:'米饭',qty:'半碗×午餐（仅此一顿）'},
+    {name:'希腊酸奶',qty:'150g，睡前备用'},
+  ],
+  cardio:[
+    {name:'香蕉',qty:'1根，练前'},
+    {name:'鸡蛋',qty:'4个（2练前+2早午餐）'},
+    {name:'鸡胸肉 / 鱼',qty:'150g×早午餐 + 150g×晚餐'},
+    {name:'米饭',qty:'1碗×早午餐 + 半碗×午餐（若饿）'},
+    {name:'蔬菜（任意）',qty:'大量'},
+  ],
+};
 
-function setOverride(btn, key) {
-  todayOverride = key;
+// ── UTILITIES ─────────────────────────────────────────
+function t2m(s){const[h,m]=s.split(':').map(Number);return h*60+m;}
+function fmtDate(d){return`${d.getMonth()+1}/${d.getDate()}`;}
+
+function getDayPlan(dow){
+  if(dow===viewDow&&todayOverride) return PLAN[OVERRIDE_MAP[todayOverride]];
+  return PLAN[dow];
+}
+
+// ── TABS ──────────────────────────────────────────────
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── OVERRIDE ──────────────────────────────────────────
+function setOverride(btn,key){
+  todayOverride=key;
   document.querySelectorAll('.ovr-btn').forEach(b=>b.classList.remove('active-ovr'));
   btn.classList.add('active-ovr');
   document.getElementById('overrideHint').classList.add('visible');
   document.getElementById('overrideChip').style.display='';
   render();
 }
-
-function resetOverride() {
-  todayOverride = null;
+function resetOverride(){
+  todayOverride=null;
   document.querySelectorAll('.ovr-btn').forEach(b=>b.classList.remove('active-ovr'));
   document.getElementById('overrideHint').classList.remove('visible');
   document.getElementById('overrideChip').style.display='none';
   render();
 }
 
-function render() {
-  const now = new Date();
-  const dow = now.getDay();
-  const nowMin = now.getHours()*60+now.getMinutes();
+// ── DAY PICKER ────────────────────────────────────────
+function buildDayPicker(){
+  const now=new Date();
+  const todayDow=now.getDay();
+  const picker=document.getElementById('dayPicker');
+  picker.innerHTML='';
+  // Show Mon–Sun of current week
+  const monday=new Date(now);
+  const diff=todayDow===0?-6:1-todayDow;
+  monday.setDate(now.getDate()+diff);
 
-  document.getElementById('clock').textContent =
+  for(let i=0;i<7;i++){
+    const d=new Date(monday);
+    d.setDate(monday.getDate()+i);
+    const dow=d.getDay();
+    const plan=PLAN[dow];
+    const isToday=dow===todayDow;
+    const isActive=dow===viewDow;
+    const item=document.createElement('div');
+    item.className='dp-item'+(isActive?' active':'');
+    item.onclick=()=>selectDay(dow);
+    item.innerHTML=`
+      <div class="dp-dow">${DAY_EN[dow]}</div>
+      <div class="dp-date">${fmtDate(d)}</div>
+      <div class="dp-dot ${plan.type}"></div>
+      ${isToday?'<div class="dp-today-marker">TODAY</div>':'<div style="height:14px"></div>'}
+    `;
+    picker.appendChild(item);
+  }
+}
+
+function selectDay(dow){
+  viewDow=dow;
+  buildDayPicker();
+  render();
+}
+
+// ── WEIGHT ────────────────────────────────────────────
+let weightLog=getData('weightLog')||[];
+let userHeight=getData('userHeight')||183;
+
+function saveHeight(){
+  const v=parseInt(document.getElementById('heightInput').value);
+  if(isNaN(v)||v<140||v>220) return;
+  userHeight=v;
+  setData('userHeight',v);
+  const hint=document.getElementById('heightHint');
+  hint.textContent=`✓ 已保存 ${v}cm`;
+  hint.classList.add('visible');
+  setTimeout(()=>hint.classList.remove('visible'),2000);
+  renderWeightTab();
+}
+
+function openWeightModal(){
+  const now=new Date();
+  document.getElementById('modalDateHint').textContent=
+    `${now.getMonth()+1}月${now.getDate()}日 · 建议早起空腹称`;
+  document.getElementById('weightInput').value='';
+  document.getElementById('fatInput').value='';
+  document.getElementById('weightModal').style.display='flex';
+  setTimeout(()=>document.getElementById('weightInput').focus(),100);
+}
+function closeWeightModal(){
+  document.getElementById('weightModal').style.display='none';
+}
+function saveWeight(){
+  const val=parseFloat(document.getElementById('weightInput').value);
+  if(isNaN(val)||val<40||val>200) return;
+  const fatRaw=document.getElementById('fatInput').value;
+  const fat=fatRaw===''?null:parseFloat(fatRaw);
+  const now=new Date();
+  const dateStr=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  // Remove duplicate same-date entry
+  const idx=weightLog.findIndex(e=>e.date===dateStr);
+  if(idx>=0) weightLog.splice(idx,1);
+  weightLog.unshift({date:dateStr,val,fat:fat!==null&&!isNaN(fat)?fat:null});
+  weightLog.sort((a,b)=>b.date.localeCompare(a.date));
+  setData('weightLog',weightLog);
+  closeWeightModal();
+  renderWeightTab();
+}
+function deleteWeight(idx){
+  weightLog.splice(idx,1);
+  setData('weightLog',weightLog);
+  renderWeightTab();
+}
+
+function calcBMI(weight,heightCm){
+  const h=heightCm/100;
+  return weight/(h*h);
+}
+function bmiLabel(bmi){
+  if(bmi<18.5) return['偏轻','var(--cyan)'];
+  if(bmi<24)   return['正常','var(--lime)'];
+  if(bmi<28)   return['偏重','var(--yellow)'];
+  return['肥胖','var(--orange)'];
+}
+function fatLabel(fat,isMale=true){
+  // Male ranges
+  if(fat<6)  return['极低','var(--cyan)'];
+  if(fat<14) return['运动型','var(--lime)'];
+  if(fat<18) return['健康','var(--lime)'];
+  if(fat<25) return['可接受','var(--yellow)'];
+  return['偏高','var(--orange)'];
+}
+
+function renderWeightTab(){
+  const latest=weightLog[0]||null;
+  const prev=weightLog[1]||null;
+
+  // Stats row
+  const statsEl=document.getElementById('wtStatsRow');
+  if(latest){
+    const bmi=calcBMI(latest.val,userHeight);
+    const totalDelta=weightLog.length>1?(latest.val-weightLog[weightLog.length-1].val).toFixed(1):null;
+    const weekDelta=prev?(latest.val-prev.val).toFixed(1):null;
+    statsEl.innerHTML=`
+      <div class="wt-stat">
+        <div class="wt-stat-label">当前</div>
+        <div class="wt-stat-val">${latest.val}<span class="wt-stat-unit"> kg</span></div>
+        <div class="wt-stat-sub">${latest.date.slice(5)}</div>
+      </div>
+      <div class="wt-stat">
+        <div class="wt-stat-label">上次变化</div>
+        <div class="wt-stat-val" style="color:${weekDelta!==null?(weekDelta<0?'var(--lime)':weekDelta>0?'var(--orange)':'var(--muted)'):'var(--muted)'}">${weekDelta!==null?(weekDelta>0?'+':'')+weekDelta:'--'}<span class="wt-stat-unit"> kg</span></div>
+        <div class="wt-stat-sub">与上条对比</div>
+      </div>
+      <div class="wt-stat">
+        <div class="wt-stat-label">累计变化</div>
+        <div class="wt-stat-val" style="color:${totalDelta!==null?(totalDelta<0?'var(--lime)':totalDelta>0?'var(--orange)':'var(--muted)'):'var(--muted)'}">${totalDelta!==null?(totalDelta>0?'+':'')+totalDelta:'--'}<span class="wt-stat-unit"> kg</span></div>
+        <div class="wt-stat-sub">起始至今</div>
+      </div>`;
+  } else {
+    statsEl.innerHTML='<div style="color:var(--muted);font-size:12px;padding:12px 0;grid-column:1/-1;">暂无记录</div>';
+  }
+
+  // Gauges
+  const gaugeEl=document.getElementById('gaugeRow');
+  if(latest){
+    const bmi=calcBMI(latest.val,userHeight);
+    const [bmiLbl,bmiColor]=bmiLabel(bmi);
+    // BMI bar: range 15–40, normal 18.5–24
+    const bmiPct=Math.min(100,Math.max(0,(bmi-15)/25*100));
+
+    let fatHTML='';
+    if(latest.fat!==null){
+      const [fatLbl,fatColor]=fatLabel(latest.fat);
+      const fatPct=Math.min(100,Math.max(0,(latest.fat-3)/47*100));
+      fatHTML=`<div class="gauge-card">
+        <div class="gauge-title">体脂率</div>
+        <div class="gauge-val">${latest.fat.toFixed(1)}<span class="gauge-unit">%</span></div>
+        <div class="gauge-wrap" style="margin-top:8px;">
+          <div class="gauge-track" style="width:${fatPct}%;background:${fatColor};"></div>
+        </div>
+        <div class="gauge-status" style="color:${fatColor}">${fatLbl}</div>
+        <div class="gauge-range">男性健康区间 14–18%</div>
+      </div>`;
+    } else {
+      fatHTML=`<div class="gauge-card">
+        <div class="gauge-title">体脂率</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6;">暂无数据<br><span style="font-size:10px;">记录时可选填体脂率</span></div>
+      </div>`;
+    }
+
+    gaugeEl.innerHTML=`
+      <div class="gauge-card">
+        <div class="gauge-title">BMI</div>
+        <div class="gauge-val">${bmi.toFixed(1)}</div>
+        <div class="gauge-wrap" style="margin-top:8px;">
+          <div class="gauge-track" style="width:${bmiPct}%;background:${bmiColor};"></div>
+        </div>
+        <div class="gauge-status" style="color:${bmiColor}">${bmiLbl}</div>
+        <div class="gauge-range">正常区间 18.5–24</div>
+      </div>
+      ${fatHTML}`;
+  } else {
+    gaugeEl.innerHTML='<div style="color:var(--muted);font-size:12px;padding:8px 0;grid-column:1/-1;">记录体重后显示指标</div>';
+  }
+
+  // Chart
+  renderChart();
+
+  // Log
+  renderWeightLog();
+
+  // Height input sync
+  document.getElementById('heightInput').value=userHeight;
+}
+
+function renderWeightLog(){
+  const el=document.getElementById('weightLog');
+  if(!weightLog.length){
+    el.innerHTML='<div class="weight-empty">暂无记录 · 点击右上角「+ 记录体重」开始</div>';
+    return;
+  }
+  el.innerHTML=weightLog.map((e,i)=>{
+    const prev=weightLog[i+1];
+    let deltaHTML='';
+    if(prev){
+      const d=(e.val-prev.val).toFixed(1);
+      const cls=d<0?'delta-down':d>0?'delta-up':'delta-flat';
+      const arrow=d<0?'▼':d>0?'▲':'–';
+      deltaHTML=`<span class="weight-entry-delta ${cls}">${arrow}${Math.abs(d)}</span>`;
+    }
+    const fatHTML=e.fat!==null?`<span class="weight-entry-fat">${e.fat}%</span>`:'';
+    return`<div class="weight-entry">
+      <span class="weight-entry-date">${e.date.slice(5)}</span>
+      <span class="weight-entry-val">${e.val}<span style="font-size:12px;color:var(--muted);font-weight:600"> kg</span></span>
+      ${fatHTML}
+      ${deltaHTML}
+      <button class="weight-del" onclick="deleteWeight(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function renderChart(){
+  const canvas=document.getElementById('weightChart');
+  const emptyEl=document.getElementById('chartEmpty');
+  if(weightLog.length<2){
+    canvas.style.display='none';
+    emptyEl.style.display='block';
+    return;
+  }
+  canvas.style.display='block';
+  emptyEl.style.display='none';
+
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.parentElement.clientWidth-40; // account for section margin
+  const H=160;
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  canvas.style.width=W+'px'; canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  // Data: oldest first
+  const data=[...weightLog].reverse();
+  const vals=data.map(d=>d.val);
+  const minV=Math.min(...vals)-1;
+  const maxV=Math.max(...vals)+1;
+  const pad={top:16,right:12,bottom:28,left:36};
+  const cw=W-pad.left-pad.right;
+  const ch=H-pad.top-pad.bottom;
+
+  const xp=i=>pad.left+i/(data.length-1)*cw;
+  const yp=v=>pad.top+ch-(v-minV)/(maxV-minV)*ch;
+
+  // Grid lines
+  ctx.strokeStyle='#1e2428';
+  ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=pad.top+i/4*ch;
+    ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(pad.left+cw,y); ctx.stroke();
+    const lv=(maxV-(maxV-minV)*i/4).toFixed(1);
+    ctx.fillStyle='#4a5560';
+    ctx.font=`500 9px Barlow, sans-serif`;
+    ctx.textAlign='right';
+    ctx.fillText(lv,pad.left-4,y+3);
+  }
+
+  // Fat % line (if available)
+  const fatData=data.filter(d=>d.fat!==null);
+  if(fatData.length>=2){
+    const fatIdxMap=data.map((d,i)=>d.fat!==null?i:null).filter(x=>x!==null);
+    ctx.save();
+    ctx.strokeStyle='rgba(32,200,232,0.4)';
+    ctx.lineWidth=1.5;
+    ctx.setLineDash([4,3]);
+    // Draw fat on secondary scale (right axis)
+    const fatVals=fatData.map(d=>d.fat);
+    const minF=Math.min(...fatVals)-2;
+    const maxF=Math.max(...fatVals)+2;
+    const yfp=v=>pad.top+ch-(v-minF)/(maxF-minF)*ch;
+    ctx.beginPath();
+    let first=true;
+    data.forEach((d,i)=>{
+      if(d.fat===null) return;
+      const x=xp(i), y=yfp(d.fat);
+      if(first){ctx.moveTo(x,y);first=false;}else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  // Weight gradient fill
+  const grad=ctx.createLinearGradient(0,pad.top,0,pad.top+ch);
+  grad.addColorStop(0,'rgba(184,255,60,0.15)');
+  grad.addColorStop(1,'rgba(184,255,60,0)');
+  ctx.beginPath();
+  ctx.moveTo(xp(0),yp(vals[0]));
+  vals.forEach((_,i)=>ctx.lineTo(xp(i),yp(vals[i])));
+  ctx.lineTo(xp(vals.length-1),pad.top+ch);
+  ctx.lineTo(xp(0),pad.top+ch);
+  ctx.closePath();
+  ctx.fillStyle=grad;
+  ctx.fill();
+
+  // Weight line
+  ctx.strokeStyle='#b8ff3c';
+  ctx.lineWidth=2;
+  ctx.lineJoin='round';
+  ctx.beginPath();
+  vals.forEach((v,i)=>{
+    if(i===0) ctx.moveTo(xp(i),yp(v));
+    else ctx.lineTo(xp(i),yp(v));
+  });
+  ctx.stroke();
+
+  // Dots
+  vals.forEach((v,i)=>{
+    ctx.beginPath();
+    ctx.arc(xp(i),yp(v),3,0,Math.PI*2);
+    ctx.fillStyle='#b8ff3c';
+    ctx.fill();
+  });
+
+  // X labels (show first, last, and every ~3rd)
+  ctx.fillStyle='#4a5560';
+  ctx.font=`500 9px Barlow, sans-serif`;
+  ctx.textAlign='center';
+  data.forEach((d,i)=>{
+    if(i===0||i===data.length-1||i%3===0){
+      ctx.fillText(d.date.slice(5),xp(i),H-6);
+    }
+  });
+
+  // Legend
+  ctx.fillStyle='#b8ff3c'; ctx.fillRect(pad.left,6,14,2);
+  ctx.fillStyle='#4a5560'; ctx.font='500 9px Barlow,sans-serif'; ctx.textAlign='left';
+  ctx.fillText('体重',pad.left+18,10);
+  if(fatData.length>=2){
+    ctx.save(); ctx.strokeStyle='rgba(32,200,232,0.6)'; ctx.lineWidth=1.5;
+    ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(pad.left+56,7); ctx.lineTo(pad.left+70,7); ctx.stroke();
+    ctx.setLineDash([]); ctx.restore();
+    ctx.fillStyle='#4a5560'; ctx.fillText('体脂率',pad.left+74,10);
+  }
+}
+
+// ── SHOPPING ──────────────────────────────────────────
+function renderShopping(){
+  const now=new Date();
+  const todayDow=now.getDay();
+  const el=document.getElementById('shopContent');
+
+  // Build next 3 days starting from tomorrow
+  let html='';
+  for(let offset=1;offset<=3;offset++){
+    const d=new Date(now);
+    d.setDate(now.getDate()+offset);
+    const dow=d.getDay();
+    const plan=PLAN[dow];
+    const dietType=plan.type==='train'?'train':plan.type==='cardio'?'cardio':'rest';
+    const items=SHOP[dietType];
+    const dayLabel=`${fmtDate(d)} 周${DAYS[dow]}`;
+    const chipTxt={train:'训练日',rest:'休息日',cardio:'有氧日'}[plan.type];
+    const chipCls={train:'chip-train',rest:'chip-rest',cardio:'chip-cardio'}[plan.type];
+
+    html+=`<div class="shop-day">
+      <div class="shop-day-hd">${dayLabel}<span class="${chipCls}">${chipTxt}</span></div>
+      <div class="shop-items">
+        ${items.map((item,i)=>{
+          const key=`${offset}-${i}`;
+          const checked=shopChecked[key]||false;
+          return`<div class="shop-item${checked?' checked':''}" onclick="toggleShop('${key}',this)">
+            <div class="shop-check">${checked?'✓':''}</div>
+            <span class="shop-name">${item.name}</span>
+            <span class="shop-qty">${item.qty}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  html+=`<button class="shop-reset" onclick="resetShop()">↺ 清除所有勾选</button>`;
+  el.innerHTML=html;
+}
+
+function toggleShop(key,el){
+  shopChecked[key]=!shopChecked[key];
+  el.classList.toggle('checked',shopChecked[key]);
+  el.querySelector('.shop-check').textContent=shopChecked[key]?'✓':'';
+}
+
+function resetShop(){
+  Object.keys(shopChecked).forEach(k=>delete shopChecked[k]);
+  renderShopping();
+}
+
+// ── MAIN RENDER ───────────────────────────────────────
+function render(){
+  const now=new Date();
+  const todayDow=now.getDay();
+  const nowMin=now.getHours()*60+now.getMinutes();
+  const isToday=viewDow===todayDow;
+
+  // Clock (always real time)
+  document.getElementById('clock').textContent=
     String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('dateStr').textContent =
-    `${now.getMonth()+1}/${now.getDate()} 周${DAYS[dow]}`;
+  document.getElementById('clockDate').textContent=
+    `${now.getMonth()+1}/${now.getDate()} 周${DAYS[todayDow]}`;
 
-  const key = todayOverride ? OVERRIDE_MAP[todayOverride] : dow;
-  const day = PLAN[key];
+  // Week counter
+  const wn=getWeekNum();
+  document.getElementById('weekNum').textContent=`第 ${wn} 周`;
+  const wnNote=wn<=2?'重适应期 · 用原重量60–70%':wn<=4?'建立期 · 每周线性加重':'正式期 · 保持进阶';
+  document.getElementById('weekNote').textContent=wnNote;
+
+  // Get plan for viewed day
+  const day=getDayPlan(viewDow);
 
   // Hero
-  const chip = document.getElementById('dayChip');
-  chip.textContent = {train:'训练日',rest:'休息日',cardio:'有氧日'}[day.type];
-  chip.className = `day-chip ${day.chipClass}`;
-  document.getElementById('dayTitle').textContent = day.label;
+  const chip=document.getElementById('dayChip');
+  chip.textContent={train:'训练日',rest:'休息日',cardio:'有氧日'}[day.type];
+  chip.className=`day-chip ${day.chipClass}`;
+  document.getElementById('dayTitle').textContent=day.label;
 
-  const [dietTxt, dietCls] = {
+  const[dietTxt,dietCls]={
     high:['🔴  高碳日  ·  2400 kcal','diet-high'],
-    mid: ['🟡  中碳日  ·  2200 kcal','diet-mid'],
-    low: ['🔵  低碳日  ·  1900 kcal','diet-low'],
+    mid:['🟡  中碳日  ·  2200 kcal','diet-mid'],
+    low:['🔵  低碳日  ·  1900 kcal','diet-low'],
   }[day.diet];
-  const db = document.getElementById('dietBadge');
-  db.textContent = dietTxt; db.className = `diet-badge ${dietCls}`;
+  const db=document.getElementById('dietBadge');
+  db.textContent=dietTxt; db.className=`diet-badge ${dietCls}`;
+
+  // Now card + override: only show for today
+  document.getElementById('nowCard').style.display=isToday?'':'none';
+  document.getElementById('overrideSection').style.display=isToday?'':'none';
+  document.getElementById('overrideChip').style.display=
+    (isToday&&todayOverride)?'':'none';
 
   // Timeline
-  const tl = day.tl || LOW_TL;
-  let activeIdx = -1;
-  const tlHTML = tl.map((item,i) => {
-    const t = t2m(item.time);
-    const nt = i+1 < tl.length ? t2m(tl[i+1].time) : 1440;
-    let cls = '';
-    if (nowMin >= t && nowMin < nt) { cls='active'; activeIdx=i; }
-    else if (nowMin >= nt) cls='past';
-    const tagHTML = item.tag ? `<span class="tl-tag">${item.tag}</span>` : '';
-    return `<div class="tl-item ${cls}">
+  const tl=day.tl||LOW_TL;
+  let activeIdx=-1;
+  const tlHTML=tl.map((item,i)=>{
+    const t=t2m(item.time);
+    const nt=i+1<tl.length?t2m(tl[i+1].time):1440;
+    let cls='';
+    if(isToday&&nowMin>=t&&nowMin<nt){cls='active';activeIdx=i;}
+    else if(isToday&&nowMin>=nt) cls='past';
+    const tagHTML=item.tag?`<span class="tl-tag">${item.tag}</span>`:'';
+    return`<div class="tl-item ${cls}">
       <div class="tl-time">${item.time}</div>
       <div class="tl-spine"><div class="tl-dot"></div><div class="tl-vline"></div></div>
       <div class="tl-body">
@@ -658,61 +970,66 @@ function render() {
       </div>
     </div>`;
   }).join('');
-  document.getElementById('timeline').innerHTML = tlHTML;
+  document.getElementById('timeline').innerHTML=tlHTML;
 
-  // Now card
-  let cur=null, nxt=null;
-  if (activeIdx>=0){ cur=tl[activeIdx]; nxt=tl[activeIdx+1]||null; }
-  else { for(let i=0;i<tl.length;i++){ if(nowMin<t2m(tl[i].time)){nxt=tl[i];break;} } }
-
-  if(cur){
-    document.getElementById('nowTask').textContent = cur.task.toUpperCase();
-    document.getElementById('nowDetail').textContent = cur.detail;
-  } else if(nxt){
-    document.getElementById('nowTask').textContent = `准备：${nxt.task}`;
-    document.getElementById('nowDetail').textContent = nxt.detail;
-  } else {
-    document.getElementById('nowTask').textContent = '今日任务完成';
-    document.getElementById('nowDetail').textContent = '好好休息，明天继续';
+  // Now card content
+  if(isToday){
+    let cur=null,nxt=null;
+    if(activeIdx>=0){cur=tl[activeIdx];nxt=tl[activeIdx+1]||null;}
+    else{for(let i=0;i<tl.length;i++){if(nowMin<t2m(tl[i].time)){nxt=tl[i];break;}}}
+    if(cur){
+      document.getElementById('nowTask').textContent=cur.task.toUpperCase();
+      document.getElementById('nowDetail').textContent=cur.detail;
+    } else if(nxt){
+      document.getElementById('nowTask').textContent=`准备：${nxt.task}`;
+      document.getElementById('nowDetail').textContent=nxt.detail;
+    } else {
+      document.getElementById('nowTask').textContent='今日任务完成';
+      document.getElementById('nowDetail').textContent='好好休息，明天继续';
+    }
+    const nx=document.getElementById('nowNext');
+    if(cur&&nxt){
+      nx.style.display='flex';
+      document.getElementById('nowNextTime').textContent=nxt.time;
+      document.getElementById('nowNextTask').textContent=nxt.task;
+    } else nx.style.display='none';
   }
-  const nx = document.getElementById('nowNext');
-  if(cur && nxt){
-    nx.style.display='flex';
-    document.getElementById('nowNextTime').textContent=nxt.time;
-    document.getElementById('nowNextTask').textContent=nxt.task;
-  } else { nx.style.display='none'; }
 
   // Macros
-  const mac = MACROS[day.diet];
-  document.getElementById('macroGrid').innerHTML = `
+  const mac=MACROS[day.diet];
+  document.getElementById('macroGrid').innerHTML=`
     <div class="macro-item macro-cal"><div class="macro-lbl">热量</div><div class="macro-val">${mac.cal}<span class="macro-unit">kcal</span></div></div>
     <div class="macro-item macro-pro"><div class="macro-lbl">蛋白质</div><div class="macro-val">${mac.pro}<span class="macro-unit">g</span></div></div>
     <div class="macro-item macro-carb"><div class="macro-lbl">碳水</div><div class="macro-val">${mac.carb}<span class="macro-unit">g</span></div></div>
     <div class="macro-item macro-fat"><div class="macro-lbl">脂肪</div><div class="macro-val">${mac.fat}<span class="macro-unit">g</span></div></div>`;
 
   // Suppl
-  const isActive = day.type !== 'rest';
-  const suppls = isActive
-    ? [{i:'💊',t:'蛋白粉 1勺',w:'练后'},{i:'⚗️',t:'肌酸 5g',w:'练后'},{i:'🥛',t:'蛋白粉（缺口时）',w:'睡前'}]
-    : [{i:'⚗️',t:'肌酸 5g',w:'午餐后'},{i:'🥛',t:'蛋白粉 1勺',w:'睡前'}];
-  document.getElementById('supplList').innerHTML = suppls.map(s=>
+  const isActive=day.type!=='rest';
+  const suppls=isActive
+    ?[{i:'💊',t:'蛋白粉 1勺',w:'练后'},{i:'⚗️',t:'肌酸 5g',w:'练后'},{i:'🥛',t:'蛋白粉（缺口时）',w:'睡前'}]
+    :[{i:'⚗️',t:'肌酸 5g',w:'午餐后'},{i:'🥛',t:'蛋白粉 1勺',w:'睡前'}];
+  document.getElementById('supplList').innerHTML=suppls.map(s=>
     `<div class="suppl-item"><span class="suppl-icon">${s.i}</span><span class="suppl-text">${s.t}</span><span class="suppl-when">${s.w}</span></div>`
   ).join('');
 
   // Spine
-  const spineExtraEl = document.getElementById('spineExtra');
-  const spineLabelEl = document.getElementById('spineLabel');
+  const spineExtraEl=document.getElementById('spineExtra');
+  const spineLabelEl=document.getElementById('spineLabel');
   if(day.spineExtra){
-    spineLabelEl.innerHTML = '胸椎专项 · 今日重点<span style="flex:1;height:1px;background:var(--border);display:inline-block;margin-left:10px;vertical-align:middle"></span>';
-    spineExtraEl.innerHTML = `<div class="spine-extra">${day.spineExtra}</div>`;
+    spineLabelEl.innerHTML='胸椎专项 · 今日重点<span style="flex:1;height:1px;background:var(--border);display:inline-block;margin-left:10px;vertical-align:middle"></span>';
+    spineExtraEl.innerHTML=`<div class="spine-extra">${day.spineExtra}</div>`;
   } else {
-    spineLabelEl.innerHTML = '胸椎松动 · 每2小时<span style="flex:1;height:1px;background:var(--border);display:inline-block;margin-left:10px;vertical-align:middle"></span>';
-    spineExtraEl.innerHTML = '';
+    spineLabelEl.innerHTML='胸椎松动 · 每2小时<span style="flex:1;height:1px;background:var(--border);display:inline-block;margin-left:10px;vertical-align:middle"></span>';
+    spineExtraEl.innerHTML='';
   }
 }
 
+// ── INIT ──────────────────────────────────────────────
+buildDayPicker();
 render();
-setInterval(render, 10000);
+renderWeightTab();
+renderShopping();
+setInterval(()=>{render();},10000);
 </script>
 </body>
 </html>
