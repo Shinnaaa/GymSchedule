@@ -770,24 +770,38 @@ async function doScan(){
   document.getElementById('scanOutput').innerHTML=
     `<div class="scan-loading"><div class="scan-spinner"></div>识别中，请稍候...</div>`;
 
-  // Precision-tuned prompt for Gemini food calorie estimation
-  const prompt=`你是专业营养师，任务是通过食物照片精确估算热量和营养素。
+  // Strict food calorie estimation prompt with calorie database
+  const prompt=`你是顶级运动营养师，专门为健身人士精确估算食物热量。请分析图片中的食物。
 
-分析步骤：
-1. 识别图中所有食物（含配菜、酱汁、饮料，不要遗漏）
-2. 参考餐具尺寸、食物堆叠厚度估算每种食物重量(g)
-3. 结合食物种类和烹饪方式估算热量密度
-4. 逐项计算，汇总三大营养素
+【强制热量基准数据库】
+面条类（必须含汤汁和油脂计算）：
+- 日式拉面/叉烧面一大碗：700~900kcal（面条200g=280kcal+叉烧50g=125kcal+汤底油脂=150kcal+配料）
+- 日式拉面标准碗：750kcal起步，不得低于600kcal
+- 乌冬面一碗：550~700kcal
+- 炒面一份：550~750kcal
+- 意面肉酱一份：650~800kcal
+米饭类：
+- 白米饭1碗200g：232kcal，蛋白4g，碳水51g，脂肪0.4g
+- 炒饭一份300g：500~650kcal（含油）
+肉类每100g熟重：
+- 猪叉烧：250kcal，蛋白21g，碳水5g，脂肪15g
+- 鸡胸：165kcal，蛋白31g，碳水0g，脂肪3.6g
+- 牛肉片：200kcal，蛋白26g，脂肪10g
+油脂附加（必须计入）：
+- 拉面汤底：+100~180kcal
+- 中式炒菜：+120~160kcal/份
+- 日式酱汁：+50~80kcal
 
-参考基准（请严格遵守）：
-- 白米饭1碗(200g)=232kcal，蛋白4g，碳水51g，脂肪0.4g
-- 鸡胸肉100g=165kcal，蛋白31g，碳水0g，脂肪3.6g
-- 日式定食酱汁额外+30~50kcal
-- 中式炒菜用油额外+80~120kcal/份
-- 宁可高估5%也不要低估
+【估算规则——违反即为错误】
+1. 面类食物：有汤必须加算汤底热量，绝不能只算面条本身
+2. 每种配料单独计算后累加，不得遗漏
+3. total_kcal必须等于所有foods[].kcal的总和
+4. 宁可高估15%，绝不低估
+5. confidence=低时必须在tips中说明原因
 
-必须仅输出以下JSON格式，禁止任何前缀、解释或markdown：
-{"foods":[{"name":"食物名","weight_g":数字,"kcal":数字,"protein_g":数字,"carb_g":数字,"fat_g":数字}],"total_kcal":数字,"protein_g":数字,"carb_g":数字,"fat_g":数字,"confidence":"高或中或低","tips":"不确定性说明或空字符串"}`;
+【输出规则——严格执行】
+只输出纯JSON，不得包含任何说明文字，不得用代码块包裹，不得有注释：
+{"foods":[{"name":"食物名称","weight_g":数字,"kcal":数字,"protein_g":数字,"carb_g":数字,"fat_g":数字,"basis":"重量估算依据"}],"total_kcal":数字,"protein_g":数字,"carb_g":数字,"fat_g":数字,"confidence":"高或中或低","tips":"主要不确定因素"}`;
 
   try{
     // Gemini Vision API
@@ -805,7 +819,8 @@ async function doScan(){
           }],
           generationConfig:{
             temperature:0.1,   // low temp for consistent numbers
-            maxOutputTokens:1024,
+            maxOutputTokens:2048,
+            responseMimeType:"application/json",
           }
         })
       }
@@ -817,23 +832,24 @@ async function doScan(){
     }
 
     const data=await resp.json();
-    const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
 
-    // Parse JSON from response
+    // Robust parse: strip thinking tags, fences, find outermost JSON
+    let raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    raw=raw.replace(/<think>[\s\S]*?<\/think>/gi,'').trim();
+    raw=raw.replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'').trim();
     let result;
     try{
-      const jsonMatch=raw.match(/\{[\s\S]*\}/);
-      if(!jsonMatch) throw new Error('no json');
-      result=JSON.parse(jsonMatch[0]);
+      result=JSON.parse(raw);
     }catch{
-      // Fallback: show raw
-      document.getElementById('scanOutput').innerHTML=
-        `<div class="scan-result"><div class="scan-result-title">识别结果</div><div style="font-size:12px;color:var(--muted);line-height:1.7;">${raw.replace(/\n/g,'<br>')}</div></div>`;
-      document.getElementById('scanBtn').disabled=false;
-      return;
+      // find last complete {...} block
+      const blocks=[...raw.matchAll(/\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/g)];
+      const biggest=blocks.sort((a,b)=>b[0].length-a[0].length)[0];
+      if(biggest){ try{ result=JSON.parse(biggest[0]); }catch{ throw new Error('JSON解析失败，原始:'+raw.slice(0,200)); } }
+      else throw new Error('未找到有效JSON · 原始回复：'+raw.slice(0,300));
     }
+    if(!result.total_kcal||!result.foods) throw new Error('返回数据缺少必要字段');
 
-    // Render result
+        // Render result
     const confColor={高:'var(--lime)',中:'var(--yellow)',低:'var(--orange)'}[result.confidence]||'var(--muted)';
     const foodRows=result.foods?.map(f=>
       `<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:5px 0;border-bottom:1px solid var(--border);">
