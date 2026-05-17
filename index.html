@@ -819,7 +819,7 @@ async function doScan(){
           }],
           generationConfig:{
             temperature:0.1,   // low temp for consistent numbers
-            maxOutputTokens:2048,
+            maxOutputTokens:8192,
             responseMimeType:"application/json",
           }
         })
@@ -833,19 +833,19 @@ async function doScan(){
 
     const data=await resp.json();
 
-    // Robust parse: strip thinking tags, fences, find outermost JSON
+    // Robust parse: strip thinking tags and fences
     let raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
     raw=raw.replace(/<think>[\s\S]*?<\/think>/gi,'').trim();
     raw=raw.replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'').trim();
     let result;
     try{
       result=JSON.parse(raw);
-    }catch{
-      // find last complete {...} block
-      const blocks=[...raw.matchAll(/\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/g)];
-      const biggest=blocks.sort((a,b)=>b[0].length-a[0].length)[0];
-      if(biggest){ try{ result=JSON.parse(biggest[0]); }catch{ throw new Error('JSON解析失败，原始:'+raw.slice(0,200)); } }
-      else throw new Error('未找到有效JSON · 原始回复：'+raw.slice(0,300));
+    }catch(parseErr){
+      // Check if truncated
+      if(raw.length>100){
+        throw new Error('识别结果被截断，请重试（图片过大可尝试压缩后上传）');
+      }
+      throw new Error('未找到有效JSON · 原始回复：'+raw.slice(0,300));
     }
     if(!result.total_kcal||!result.foods) throw new Error('返回数据缺少必要字段');
 
