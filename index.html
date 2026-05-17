@@ -425,21 +425,22 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
     <div class="setting-hint" id="bodyHint"></div>
   </div>
   <div class="section" style="margin-top:4px;">
-    <div class="sec-label">DeepSeek API Key</div>
+    <div class="sec-label">Gemini API Key</div>
     <div class="settings-group">
       <div class="setting-row" style="flex-wrap:wrap;gap:8px;">
         <span class="setting-label">Key</span>
         <div class="setting-input-wrap">
-          <input class="setting-input wide" id="apiKeyInput" type="password" placeholder="sk-xxxxxxxxxxxxxxxx">
+          <input class="setting-input wide" id="apiKeyInput" type="password" placeholder="AIzaxxxxxxxxxxxxxxxx">
         </div>
         <button class="setting-save" onclick="saveApiKey()">保存</button>
       </div>
     </div>
     <div class="setting-hint" id="apiKeyHint"></div>
     <div class="api-key-note">
-      1. 前往 <code>platform.deepseek.com</code> → API Keys → 创建新密钥<br>
-      2. 将 <code>sk-...</code> 开头的 Key 粘贴到上方输入框<br>
-      3. 点击保存后即可使用拍照识别功能<br>
+      1. 打开 <code>aistudio.google.com</code> → 登录 Google 账号<br>
+      2. 左侧「Get API key」→「Create API key」<br>
+      3. 复制 <code>AIza...</code> 开头的 Key 粘贴到上方<br>
+      4. 免费额度：每天1500次，日常使用完全够用<br>
       ⚠️ Key 仅存储在本页面内存中，刷新后需重新填写
     </div>
   </div>
@@ -761,7 +762,7 @@ async function doScan(){
   if(!currentImageB64){return;}
   if(!apiKey){
     document.getElementById('scanOutput').innerHTML=
-      `<div class="api-warn">⚠️ 未设置 DeepSeek API Key · 请前往 <a onclick="switchTab('settings',document.querySelector('.tab-btn:last-child'))">设置</a> 填写</div>`;
+      `<div class="api-warn">⚠️ 未设置 Gemini API Key · 请前往「设置」Tab 填写</div>`;
     return;
   }
 
@@ -769,54 +770,46 @@ async function doScan(){
   document.getElementById('scanOutput').innerHTML=
     `<div class="scan-loading"><div class="scan-spinner"></div>识别中，请稍候...</div>`;
 
-  // Precision-tuned prompt for food calorie estimation
-  const prompt=`你是一个专业营养师AI，擅长通过食物图片精确估算热量。
+  // Precision-tuned prompt for Gemini food calorie estimation
+  const prompt=`你是专业营养师，任务是通过食物照片精确估算热量和营养素。
 
-请仔细观察图片中的食物，按以下步骤分析：
-1. 识别所有食物种类（包括配菜、酱料、饮料）
-2. 根据餐盘/碗大小、食物堆叠程度估算每种食物的重量（克）
-3. 查询每种食物的热量密度（kcal/100g）
-4. 计算每种食物热量
-5. 得出总热量和三大营养素
+分析步骤：
+1. 识别图中所有食物（含配菜、酱汁、饮料，不要遗漏）
+2. 参考餐具尺寸、食物堆叠厚度估算每种食物重量(g)
+3. 结合食物种类和烹饪方式估算热量密度
+4. 逐项计算，汇总三大营养素
 
-输出格式（严格按JSON，不要任何额外文字）：
-{
-  "foods": [
-    {"name": "食物名称", "weight_g": 数字, "kcal": 数字, "note": "估算依据"}
-  ],
-  "total_kcal": 数字,
-  "protein_g": 数字,
-  "carb_g": 数字,
-  "fat_g": 数字,
-  "confidence": "高/中/低",
-  "tips": "简短提示（如有估算不确定性）"
-}
+参考基准（请严格遵守）：
+- 白米饭1碗(200g)=232kcal，蛋白4g，碳水51g，脂肪0.4g
+- 鸡胸肉100g=165kcal，蛋白31g，碳水0g，脂肪3.6g
+- 日式定食酱汁额外+30~50kcal
+- 中式炒菜用油额外+80~120kcal/份
+- 宁可高估5%也不要低估
 
-注意：
-- 如果是日式/中式餐，考虑酱油、味醂等调味料热量
-- 米饭1碗约200g=232kcal
-- 宁可高估10%也不要低估
-- confidence=低 时在tips说明原因`;
+必须仅输出以下JSON格式，禁止任何前缀、解释或markdown：
+{"foods":[{"name":"食物名","weight_g":数字,"kcal":数字,"protein_g":数字,"carb_g":数字,"fat_g":数字}],"total_kcal":数字,"protein_g":数字,"carb_g":数字,"fat_g":数字,"confidence":"高或中或低","tips":"不确定性说明或空字符串"}`;
 
   try{
-    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':`Bearer ${apiKey}`,
-      },
-      body:JSON.stringify({
-        model:'deepseek-chat',
-        max_tokens:800,
-        messages:[{
-          role:'user',
-          content:[
-            {type:'image_url',image_url:{url:`data:${currentImageType};base64,${currentImageB64}`}},
-            {type:'text',text:prompt}
-          ]
-        }]
-      })
-    });
+    // Gemini Vision API
+    const resp=await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          contents:[{
+            parts:[
+              {inline_data:{mime_type:currentImageType,data:currentImageB64}},
+              {text:prompt}
+            ]
+          }],
+          generationConfig:{
+            temperature:0.1,   // low temp for consistent numbers
+            maxOutputTokens:1024,
+          }
+        })
+      }
+    );
 
     if(!resp.ok){
       const err=await resp.json().catch(()=>({}));
@@ -824,7 +817,7 @@ async function doScan(){
     }
 
     const data=await resp.json();
-    const raw=data.choices?.[0]?.message?.content||'';
+    const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
 
     // Parse JSON from response
     let result;
@@ -843,10 +836,10 @@ async function doScan(){
     // Render result
     const confColor={高:'var(--lime)',中:'var(--yellow)',低:'var(--orange)'}[result.confidence]||'var(--muted)';
     const foodRows=result.foods?.map(f=>
-      `<div style="display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px solid var(--border);">
-        <span style="color:var(--text)">${f.name}</span>
-        <span style="color:var(--muted)">${f.weight_g}g</span>
-        <span style="color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:700">${f.kcal} kcal</span>
+      `<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:5px 0;border-bottom:1px solid var(--border);">
+        <span style="color:var(--text);flex:1">${f.name}</span>
+        <span style="color:var(--muted);margin:0 8px">${f.weight_g}g</span>
+        <span style="color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px">${f.kcal} kcal</span>
       </div>`
     ).join('')||'';
 
@@ -1063,10 +1056,10 @@ function saveSetting(type){
 }
 function saveApiKey(){
   const v=document.getElementById('apiKeyInput').value.trim();
-  if(!v.startsWith('sk-')) return showHint('apiKeyHint','⚠️ Key 格式不对，应以 sk- 开头');
+  if(!v.startsWith('AIza')) return showHint('apiKeyHint','⚠️ Gemini Key 格式不对，应以 AIza 开头');
   apiKey=v;
-  document.getElementById('apiKeyInput').value='sk-'+'*'.repeat(v.length-3);
-  showHint('apiKeyHint','✓ API Key 已保存，可以使用拍照识别了');
+  document.getElementById('apiKeyInput').value='AIza'+'*'.repeat(Math.min(v.length-4,20));
+  showHint('apiKeyHint','✓ Gemini API Key 已保存，可以使用拍照识别了');
   document.getElementById('apiWarn').innerHTML='';
 }
 function showHint(id,msg){
