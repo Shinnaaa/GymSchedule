@@ -395,7 +395,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
   </div>
   <div class="section" style="margin-top:12px;">
     <div class="sec-label">记录明细</div>
-    <div class="weight-goal">目标：每周下降 <strong>0.5–1 kg</strong> · 每周一早起空腹称</div>
+    <div class="weight-goal">目标：每周下降 <strong>0.75–1 kg</strong> · 每周一早起空腹称 · 每减10kg重新评估</div>
     <div class="weight-log" id="weightLog"></div>
   </div>
 </div>
@@ -420,6 +420,14 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
           <span class="setting-unit">kg</span>
         </div>
         <button class="setting-save" onclick="saveSetting('weight')">保存</button>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">年龄</span>
+        <div class="setting-input-wrap">
+          <input class="setting-input" id="ageInput" type="number" min="15" max="80" placeholder="28">
+          <span class="setting-unit">岁</span>
+        </div>
+        <button class="setting-save" onclick="saveSetting('age')">保存</button>
       </div>
     </div>
     <div class="setting-hint" id="bodyHint"></div>
@@ -479,6 +487,7 @@ const OVERRIDE_MAP={chest:1,back:2,legs:4,cardio:6,rest:'R'};
 // User profile (real-time from settings)
 let userHeight=183; // cm
 let userWeight=106; // kg
+let userAge=28;
 let currentTier='normal'; // strict | normal | loose
 let apiKey='';
 let weightLog=[];
@@ -486,64 +495,59 @@ let scanFoodLog=[];
 
 // ═══════════════════════════════════════════════════
 // MACRO CALCULATION ENGINE
-// Based on Mifflin-St Jeor + activity factor + tier deficit
+// Macro calculation — goal: fat loss primary, muscle preservation secondary
+// Strategy: fixed high protein, carb cycle around training, calorie targets fixed per day type
 // ═══════════════════════════════════════════════════
 function calcMacros(height,weight,tier,dietType){
-  // BMR (male, Mifflin-St Jeor)
-  const bmr=10*weight+6.25*height-5*30+5; // age assumed 30
-  // Activity: WFH desk job + 3x/week gym = lightly active 1.375
-  // (NOT 1.55 which assumes moderate daily activity — WFH is sedentary base)
+  // BMR (male, Mifflin-St Jeor) — uses real userAge
+  const bmr=Math.round(10*weight+6.25*height-5*userAge+5);
+  // WFH + 3x gym/week = lightly active 1.375 (NOT 1.55)
   const tdee=Math.round(bmr*1.375);
 
-  // Deficit by tier
-  const deficits={strict:500,normal:300,loose:100};
-  const deficit=deficits[tier];
+  // Each day type has its own fixed calorie target — NOT derived from a single deficit
+  // Train days: moderate deficit ~550kcal (need fuel for performance)
+  // Cardio days: moderate-high deficit ~750kcal
+  // Rest days: aggressive deficit ~1200kcal (no training = no carb need)
+  // Weekly average deficit ~830kcal → ~0.75kg/week loss
+  const tierScale={strict:1.15,normal:1.0,loose:0.85}[tier];
 
-  // Base daily calorie target
-  const baseCal=tdee-deficit;
+  const proto=Math.round(weight*1.8); // protein constant always
+  const protoCal=proto*4;
 
-  // Protein: 1.8g/kg for recomp
-  const pro=Math.round(weight*1.8);
-  const proCal=pro*4;
+  let cal,carb,fat;
 
-  // Carb/fat split by diet type — always derived from baseCal, never exceed it
-  let carb,fat,cal;
   if(dietType==='high'){
-    // Train day: ~45% cal from carb, rest fat
-    const carbRatio={strict:0.40,normal:0.45,loose:0.50}[tier];
-    carb=Math.round((baseCal-proCal)*carbRatio/4);
-    fat=Math.round((baseCal-proCal-carb*4)/9);
-    if(fat<55){fat=55;} // hormone floor
-    cal=proCal+carb*4+fat*9;
+    // Train day: 2400kcal base (strict: 2280, loose: 2520)
+    cal=Math.round(2400*tierScale);
+    // Carb distribution: 165g base — concentrate pre/post workout
+    carb=Math.round(165*tierScale);
+    fat=Math.round((cal-protoCal-carb*4)/9);
+    if(fat<55){fat=55; cal=protoCal+carb*4+fat*9;}
   } else if(dietType==='mid'){
-    // Cardio day: ~35% cal from carb
-    const carbRatio={strict:0.30,normal:0.35,loose:0.40}[tier];
-    carb=Math.round((baseCal-proCal)*carbRatio/4);
-    fat=Math.round((baseCal-proCal-carb*4)/9);
-    if(fat<55) fat=55;
-    cal=proCal+carb*4+fat*9;
+    // Cardio day: 2200kcal base
+    cal=Math.round(2200*tierScale);
+    carb=Math.round(115*tierScale);
+    fat=Math.round((cal-protoCal-carb*4)/9);
+    if(fat<55){fat=55; cal=protoCal+carb*4+fat*9;}
   } else {
-    // Rest day: low carb ~20%, fat fills rest
-    const carbRatio={strict:0.15,normal:0.20,loose:0.25}[tier];
-    carb=Math.round((baseCal-proCal)*carbRatio/4);
-    fat=Math.round((baseCal-proCal-carb*4)/9);
-    if(fat<65) fat=65;
-    cal=proCal+carb*4+fat*9;
+    // Rest day: 1750kcal base — low carb, fat fuels metabolism
+    cal=Math.round(1750*tierScale);
+    carb=Math.round(50*tierScale);
+    fat=Math.round((cal-protoCal-carb*4)/9);
+    if(fat<65){fat=65; cal=protoCal+carb*4+fat*9;}
   }
 
-  return{cal:Math.round(cal),pro,carb,fat,tdee,bmr:Math.round(bmr),deficit};
+  const deficit=tdee-cal;
+  return{cal:Math.round(cal),pro:proto,carb:Math.round(carb),fat:Math.round(fat),tdee,bmr,deficit};
 }
 
 function getTierDesc(tier,macros){
-  const{tdee,deficit}={
-    strict:{tdee:macros.tdee,deficit:500},
-    normal:{tdee:macros.tdee,deficit:300},
-    loose:{tdee:macros.tdee,deficit:100},
-  }[tier];
+  const weeklyAvg={strict:Math.round((2280*3+2200*0.85+1750*1.15*3)/7),normal:Math.round((2400*3+2200+1750*3)/7),loose:Math.round((2520*3+2200*1.15+1750*0.85*3)/7)}[tier];
+  const weekDeficit=macros.tdee-weeklyAvg;
   const descs={
-    strict:`热量缺口 500 kcal · 激进减脂，训练强度需保证 · 适合执行力强时`,
-    normal:`热量缺口 300 kcal · 稳定recomposition · 推荐日常执行`,
-    loose:`热量缺口 100 kcal · 维持体重为主，肌肉增长优先 · 适合训练强度大时`,
+    strict:`训练日2280·有氧日1870·休息日2013 · 全周均缺口约${macros.tdee-Math.round((2280*3+1870+2013*3)/7)}kcal · 激进减脂，确保蛋白质足量`,
+    normal:`训练日2400·有氧日2200·休息日1750 · 全周均缺口约${macros.tdee-Math.round((2400*3+2200+1750*3)/7)}kcal · 推荐方案，减脂稳定保肌`,
+    loose:`训练日2520·有氧日2530·休息日1488 · 全周均缺口约${macros.tdee-Math.round((2520*3+2530+1488*3)/7)}kcal · 体能优先，减脂较慢`,
   };
   return descs[tier];
 }
@@ -553,28 +557,25 @@ function getTierDesc(tier,macros){
 // ═══════════════════════════════════════════════════
 function mkTrainTL(muscle,note){
   const m=calcMacros(userHeight,userWeight,currentTier,'high');
-  const preCarb=Math.round(m.carb*0.18); // ~18% carb pre-workout
-  const postCarb=Math.round(m.carb*0.35); // ~35% carb post-workout lunch
-  const dinnerCarb=Math.round(m.carb*0.15);
+  const preCarb=40,postCarb=90,dinnerCarb=Math.round(m.carb-preCarb-postCarb-30);
   return[
-    {time:'10:30',task:'练前餐',tag:'🔋 练前能量',detail:`饭团1个(碳水${preCarb}g) + 水煮蛋1个(蛋白6g)　→ 快消化碳水供能`},
+    {time:'10:30',task:'练前餐',tag:'🔋 练前能量',detail:`饭团1个(碳水${preCarb}g) + 水煮蛋1个(蛋白6g)　→ 快消化碳水，不要高脂`},
     {time:'11:10',task:'出发健身房',tag:'',detail:'步行10分钟'},
     {time:'11:20',task:'开始训练',tag:'',detail:`${muscle}${note?' · '+note:''} · 泡沫轴热身2min`},
-    {time:'12:10',task:'练后即刻',tag:'💪 合成窗口',detail:`蛋白粉1勺(蛋白25g) + 肌酸5g　→ 胰岛素敏感性最高`},
-    {time:'12:30',task:'午餐',tag:'💪 高碳高蛋白',detail:`肉${Math.round(userWeight*1.8)}g(蛋白${Math.round(userWeight*0.36)}g) + 米饭${Math.round(postCarb/60*1.5*10)/10}碗(碳水${postCarb}g) + 蔬菜`},
-    {time:'18:30',task:'晚餐',tag:'🔵 降碳水',detail:`肉150g(蛋白30g) + 米饭(碳水${dinnerCarb}g) + 蔬菜　→ 碳水减半`},
-    {time:'22:00',task:'睡前',tag:'🌙 修复',detail:`希腊酸奶或蛋白粉　→ 今日蛋白目标 ${m.pro}g`},
+    {time:'12:10',task:'练后即刻',tag:'💪 合成窗口',detail:'蛋白粉1勺(蛋白25g) + 肌酸5g　→ 此刻胰岛素敏感性最高，必须吃'},
+    {time:'12:30',task:'午餐',tag:'💪 高碳高蛋白',detail:`肉200g(蛋白40g) + 米饭1.5碗(碳水${postCarb}g) + 蔬菜　→ 今日碳水主要来源`},
+    {time:'18:30',task:'晚餐',tag:'🔵 降碳水',detail:`肉150g(蛋白30g) + 米饭半碗(碳水35g) + 蔬菜　→ 碳水减半，蛋白维持`},
+    {time:'22:00',task:'睡前',tag:'🌙 修复补充',detail:`希腊酸奶150g(蛋白15g)或蛋白粉1勺　→ 今日蛋白目标${m.pro}g`},
   ];
 }
 
 function mkLowTL(){
   const m=calcMacros(userHeight,userWeight,currentTier,'low');
-  const lunchCarb=Math.round(m.carb*0.5);
   return[
-    {time:'09:30',task:'早餐',tag:'🔵 低碳启动',detail:'鸡蛋3个(蛋白18g) + 牛油果半个或坚果　→ 零碳水，脂肪供能'},
-    {time:'12:30',task:'午餐 + 肌酸5g',tag:'🔵 少碳维持',detail:`肉200g(蛋白40g) + 蔬菜 + 米饭(碳水${lunchCarb}g)　→ 今日碳水上限${m.carb}g`},
-    {time:'18:30',task:'晚餐',tag:'🔵 无碳水',detail:`肉150g(蛋白30g) + 豆腐 + 蔬菜　→ 不吃米饭，脂肪供能`},
-    {time:'22:00',task:'睡前',tag:'🌙 修复',detail:`希腊酸奶或蛋白粉　→ 今日蛋白目标 ${m.pro}g`},
+    {time:'09:30',task:'早餐',tag:'🔵 零碳启动',detail:'鸡蛋3个(蛋白18g) + 牛油果半个或坚果一把　→ 零碳水，靠脂肪供能，不加米饭'},
+    {time:'12:30',task:'午餐 + 肌酸5g',tag:'🔵 今日唯一碳水',detail:`肉200g(蛋白40g) + 蔬菜大量 + 米饭半碗(碳水35g)　→ 今日${m.carb}g碳水全在这顿`},
+    {time:'18:30',task:'晚餐',tag:'🔵 无碳水',detail:'肉150g(蛋白30g) + 豆腐100g(蛋白5g) + 蔬菜　→ 不吃米饭，缺口在这顿拉开'},
+    {time:'22:00',task:'睡前',tag:'🌙 修复补充',detail:`希腊酸奶150g(蛋白15g)或蛋白粉1勺　→ 今日蛋白目标${m.pro}g，休息日也必须完成`},
   ];
 }
 
@@ -707,7 +708,7 @@ function renderNutrition(){
     <div class="macro-item macro-fat"><div class="macro-lbl">脂肪</div><div class="macro-val">${m.fat}<span class="macro-unit">g</span></div><div class="macro-sub">激素保底 ≥55g</div></div>`;
 
   document.getElementById('macroCalcNote').innerHTML=
-    `BMR ${m.bmr} kcal · 活动系数 1.55 · TDEE ${m.tdee} kcal · 体重 ${userWeight}kg · 身高 ${userHeight}cm<br>以上数值根据当前挡位「${{strict:'严格',normal:'普通',loose:'宽松'}[currentTier]}」和今日训练类型自动计算`;
+    `BMR ${m.bmr} kcal · TDEE ${m.tdee} kcal · 活动系数 1.375 · ${userAge}岁 · ${userWeight}kg · ${userHeight}cm<br>目标：减脂为主，保肌塑形 · 全周均缺口约${m.tdee - Math.round((2400*3+2200+1750*3)/7)} kcal · 预计每周减脂 0.7–1 kg`;
 
   // Suppl
   const isActive=day.type!=='rest';
@@ -1063,11 +1064,16 @@ function saveSetting(type){
     if(isNaN(v)||v<140||v>220) return;
     userHeight=v;
     showHint('bodyHint',`✓ 身高已更新为 ${v}cm`);
-  } else {
+  } else if(type==='weight'){
     const v=parseFloat(document.getElementById('weightSettingInput').value);
     if(isNaN(v)||v<40||v>200) return;
     userWeight=v;
     showHint('bodyHint',`✓ 体重已更新为 ${v}kg`);
+  } else if(type==='age'){
+    const v=parseInt(document.getElementById('ageInput').value);
+    if(isNaN(v)||v<15||v>80) return;
+    userAge=v;
+    showHint('bodyHint',`✓ 年龄已更新为 ${v}岁`);
   }
   renderNutrition();renderWeightTab();render();renderShopping();
 }
@@ -1087,6 +1093,7 @@ function showHint(id,msg){
 function initSettings(){
   document.getElementById('heightInput').value=userHeight;
   document.getElementById('weightSettingInput').value=userWeight;
+  document.getElementById('ageInput').value=userAge;
 }
 
 // ═══════════════════════════════════════════════════
